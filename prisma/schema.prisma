@@ -20,6 +20,20 @@ model User {
   role           String
   createdAt      DateTime @default(now()) @map("created_at")
   updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+  devices        Device[]
 
   @@map("users")
+}
+
+model Device {
+  id          String    @id @default(cuid())
+  fingerprint String
+  userId      String    @map("user_id")
+  user        User      @relation(fields: [userId], references: [id])
+  lastLoginAt DateTime? @map("last_login_at")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  updatedAt   DateTime  @default(now()) @updatedAt @map("updated_at")
+
+  @@unique([fingerprint, userId])
+  @@map("devices")
 }
