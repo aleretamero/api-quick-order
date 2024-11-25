@@ -1,0 +1,4 @@
+@baseUrl = http://localhost:3000
+
+### Hello World
+POST {{baseUrl}}/auth/login
