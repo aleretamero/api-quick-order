@@ -2,10 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DeviceService } from '@/modules/device/device.service';
 import { SessionPresenter } from '@/modules/session/presenters/session.presenter';
 import { SessionService } from '@/modules/session/session.service';
-
-class AuthenticateDto {
-  fingerprint!: string;
-}
+import { AuthenticateDto } from '@/modules/auth/dtos/authenticate.dto';
 
 @Injectable()
 export class AuthService {
