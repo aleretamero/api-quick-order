@@ -3,10 +3,15 @@ import { PrismaService } from '@/infra/prisma/prisma.service';
 import { SessionPresenter } from '@/modules/session/presenters/session.presenter';
 import { ClockUtils } from '@/common/clock-utils.helper';
 import { DateUtils } from '@/common/date-utils.helper';
+import { JwtService } from '@/infra/jwt/jwt.service';
+import { Issuer } from '@/infra/jwt/enums/issue.enum';
 
 @Injectable()
 export class SessionService {
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly jwtService: JwtService,
+  ) {}
 
   async create(deviceId: string): Promise<SessionPresenter> {
     const device = await this.prismaService.device.findUnique({
@@ -15,6 +20,7 @@ export class SessionService {
       },
       select: {
         id: true,
+        userId: true,
       },
     });
 
@@ -22,10 +28,21 @@ export class SessionService {
       throw new NotFoundException(`Device not found with id: ${deviceId}`); // TODO: i18n
     }
 
-    const expiresSession = ClockUtils.getFutureTimestamp(ClockUtils.ONE_DAY);
+    const expiresSession = ClockUtils.getFutureTimestamp('1d'); // TODO: add env
+    const expiresRefreshSession = ClockUtils.getFutureTimestamp('7d'); // TODO: add env
 
-    const accessToken = 'access-token'; // TODO: generate token
-    const refreshToken = 'refresh-token'; // TODO: generate token
+    const accessToken = await this.jwtService.sign({
+      secret: 'access-secret', // TODO: add env
+      issuer: Issuer.ACCESS_TOKEN,
+      expiresIn: expiresSession,
+      subject: device.userId,
+    });
+    const refreshToken = await this.jwtService.sign({
+      secret: 'refresh-secret', // TODO: add env
+      issuer: Issuer.REFRESH_TOKEN,
+      expiresIn: expiresRefreshSession,
+      subject: device.userId,
+    });
 
     const hashedAccessToken = 'hashed-access-token'; // TODO: hash token
     const hashedRefreshToken = 'hashed-refresh-token'; // TODO: hash token
