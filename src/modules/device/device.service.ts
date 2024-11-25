@@ -4,9 +4,14 @@ import { DevicePresenter } from '@/modules/device/presenters/device.presenter';
 
 @Injectable()
 export class DeviceService {
+  private readonly DEFAULT_FINGERPRINT = 'UNKNOWN';
+
   constructor(private readonly prismaService: PrismaService) {}
 
-  async upsert(userId: string, fingerprint: string): Promise<DevicePresenter> {
+  async upsert(
+    userId: string,
+    fingerprint: string = this.DEFAULT_FINGERPRINT,
+  ): Promise<DevicePresenter> {
     const user = await this.prismaService.user.findUnique({
       where: {
         id: userId,
