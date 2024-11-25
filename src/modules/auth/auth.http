@@ -2,3 +2,9 @@
 
 ### Login
 POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+    "email": "admin@quickorder.com",
+    "password": "hashed-password"
+}
