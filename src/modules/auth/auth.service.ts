@@ -4,11 +4,7 @@ import { SessionPresenter } from '@/modules/session/presenters/session.presenter
 import { SessionService } from '@/modules/session/session.service';
 import { AuthenticateDto } from '@/modules/auth/dtos/authenticate.dto';
 import { PrismaService } from '@/infra/prisma/prisma.service';
-
-export class LoginDto {
-  email!: string;
-  password!: string;
-}
+import { LoginDto } from '@/modules/auth/dtos/login.dto';
 
 @Injectable()
 export class AuthService {
