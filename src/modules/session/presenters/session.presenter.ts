@@ -1,7 +1,7 @@
-interface SessionPresenterProps {
+type SessionPresenterProps = {
   accessToken: string;
   refreshToken: string;
-}
+};
 
 export class SessionPresenter {
   accessToken: string;
