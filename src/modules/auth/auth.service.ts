@@ -18,11 +18,17 @@ export class AuthService {
     userId: string,
     headers: AuthenticateDto,
   ): Promise<SessionPresenter> {
-    const device = await this.deviceService.upsert(userId, headers.fingerprint);
+    const device = await this.deviceService.upsert(
+      userId,
+      headers['x-fingerprint'],
+    );
     return this.sessionService.create(device.id);
   }
 
-  async login(dto: LoginDto): Promise<SessionPresenter> {
+  async login(
+    dto: LoginDto,
+    headers: AuthenticateDto,
+  ): Promise<SessionPresenter> {
     const user = await this.prismaService.user.findUnique({
       where: {
         email: dto.email,
@@ -43,8 +49,6 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials'); // TODO: Add i18n
     }
 
-    return this.authenticate(user.id, {
-      fingerprint: 'fingerprint',
-    });
+    return this.authenticate(user.id, headers);
   }
 }

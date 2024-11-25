@@ -3,6 +3,7 @@
 ### Login
 POST {{baseUrl}}/auth/login
 Content-Type: application/json
+X-Fingerprint: 1234567890
 
 {
     "email": "admin@quickorder.com",

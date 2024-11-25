@@ -1,3 +1,7 @@
+import { IsOptional, IsString } from 'class-validator';
+
 export class AuthenticateDto {
-  fingerprint!: string;
+  @IsOptional()
+  @IsString()
+  'x-fingerprint'?: string;
 }
