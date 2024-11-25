@@ -48,6 +48,14 @@ export class SessionService {
           expiresAt: DateUtils.getDate(expiresSession),
         },
       }),
+      this.prismaService.device.update({
+        where: {
+          id: device.id,
+        },
+        data: {
+          lastLoginAt: DateUtils.getDate(),
+        },
+      }),
     ]);
 
     return new SessionPresenter({
