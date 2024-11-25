@@ -1,5 +1,5 @@
-type OffsetString = `${number}${'s' | 'm' | 'h' | 'd'}`;
-type Offset = number | OffsetString;
+export type OffsetString = `${number}${'s' | 'm' | 'h' | 'd'}`;
+export type Offset = number | OffsetString;
 
 /**
  * ClockUtils helper class.
@@ -118,5 +118,9 @@ export abstract class ClockUtils {
     }
 
     return timestamp;
+  }
+
+  static isOffsetString(input: any): input is OffsetString {
+    return typeof input === 'string' && /^\d+[smhd]$/.test(input);
   }
 }
