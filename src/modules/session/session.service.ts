@@ -7,6 +7,7 @@ import { JwtService } from '@/infra/jwt/jwt.service';
 import { Issuer } from '@/infra/jwt/enums/issue.enum';
 import { HashService } from '@/infra/hash/hash.service';
 import { EnvService } from '@/infra/env/env.service';
+import { I18nService } from '@/infra/i18n/i18n-service';
 
 @Injectable()
 export class SessionService {
@@ -15,6 +16,7 @@ export class SessionService {
     private readonly jwtService: JwtService,
     private readonly hashService: HashService,
     private readonly envService: EnvService,
+    private readonly i18nService: I18nService,
   ) {}
 
   async create(deviceId: string): Promise<SessionPresenter> {
@@ -29,7 +31,9 @@ export class SessionService {
     });
 
     if (!device) {
-      throw new NotFoundException(`Device not found with id: ${deviceId}`); // TODO: i18n
+      throw new NotFoundException(
+        this.i18nService.t('device.not_found', { deviceId }),
+      );
     }
 
     const expiresSession = ClockUtils.getFutureTimestamp(
