@@ -59,4 +59,17 @@ export class SessionService {
       refreshToken,
     });
   }
+
+  async loggedOut(deviceId: string): Promise<void> {
+    await this.prismaService.session.updateMany({
+      where: {
+        deviceId,
+        isActive: true,
+      },
+      data: {
+        isActive: false,
+        loggedOutAt: DateUtils.getDate(),
+      },
+    });
+  }
 }
