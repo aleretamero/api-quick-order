@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { SessionPresenter } from '@/modules/session/presenters/session.presenter';
 import { DeviceService } from '@/modules/device/device.service';
+import { SessionPresenter } from '@/modules/session/presenters/session.presenter';
+import { SessionService } from '@/modules/session/session.service';
 
 class AuthenticateDto {
   fingerprint!: string;
@@ -8,19 +9,17 @@ class AuthenticateDto {
 
 @Injectable()
 export class AuthService {
-  constructor(private readonly deviceService: DeviceService) {}
+  constructor(
+    private readonly deviceService: DeviceService,
+    private readonly sessionService: SessionService,
+  ) {}
 
   async authenticate(
     userId: string,
     dto: AuthenticateDto,
   ): Promise<SessionPresenter> {
     const device = await this.deviceService.upsert(userId, dto.fingerprint);
-    console.log(device);
-
-    return {
-      accessToken: '',
-      refreshToken: '',
-    };
+    return this.sessionService.create(device.id);
   }
 
   async login() {
