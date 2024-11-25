@@ -19,7 +19,7 @@ export class SessionService {
     });
 
     if (!device) {
-      throw new NotFoundException('Device not found'); // TODO: i18n
+      throw new NotFoundException(`Device not found with id: ${deviceId}`); // TODO: i18n
     }
 
     const expiresSession = ClockUtils.getFutureTimestamp(ClockUtils.ONE_DAY);
