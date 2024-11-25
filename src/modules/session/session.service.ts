@@ -4,18 +4,14 @@ import { SessionPresenter } from '@/modules/session/presenters/session.presenter
 import { ClockUtils } from '@/common/clock-utils.helper';
 import { DateUtils } from '@/common/date-utils.helper';
 
-class CreateSessionDto {
-  deviceId!: string;
-}
-
 @Injectable()
 export class SessionService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreateSessionDto): Promise<SessionPresenter> {
+  async create(deviceId: string): Promise<SessionPresenter> {
     const device = await this.prismaService.device.findUnique({
       where: {
-        id: dto.deviceId,
+        id: deviceId,
       },
       select: {
         id: true,
