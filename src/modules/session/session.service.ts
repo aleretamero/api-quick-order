@@ -1,11 +1,12 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/infra/prisma/prisma.service';
 import { SessionPresenter } from '@/modules/session/presenters/session.presenter';
-import { ClockUtils } from '@/common/clock-utils.helper';
-import { DateUtils } from '@/common/date-utils.helper';
+import { ClockUtils } from '@/common/helpers/clock-utils.helper';
+import { DateUtils } from '@/common/helpers/date-utils.helper';
 import { JwtService } from '@/infra/jwt/jwt.service';
 import { Issuer } from '@/infra/jwt/enums/issue.enum';
 import { HashService } from '@/infra/hash/hash.service';
+import { EnvService } from '@/infra/env/env.service';
 
 @Injectable()
 export class SessionService {
@@ -13,6 +14,7 @@ export class SessionService {
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
     private readonly hashService: HashService,
+    private readonly envService: EnvService,
   ) {}
 
   async create(deviceId: string): Promise<SessionPresenter> {
@@ -30,17 +32,21 @@ export class SessionService {
       throw new NotFoundException(`Device not found with id: ${deviceId}`); // TODO: i18n
     }
 
-    const expiresSession = ClockUtils.getFutureTimestamp('1d'); // TODO: add env
-    const expiresRefreshSession = ClockUtils.getFutureTimestamp('7d'); // TODO: add env
+    const expiresSession = ClockUtils.getFutureTimestamp(
+      this.envService.JWT_ACCESS_TOKEN_KEY_EXPIRES_IN,
+    );
+    const expiresRefreshSession = ClockUtils.getFutureTimestamp(
+      this.envService.JWT_REFRESH_TOKEN_KEY_EXPIRES_IN,
+    );
 
     const accessToken = await this.jwtService.sign({
-      secret: 'access-secret', // TODO: add env
+      secret: this.envService.JWT_ACCESS_TOKEN_SECRET,
       issuer: Issuer.ACCESS_TOKEN,
       expiresIn: expiresSession,
       subject: device.userId,
     });
     const refreshToken = await this.jwtService.sign({
-      secret: 'refresh-secret', // TODO: add env
+      secret: this.envService.JWT_REFRESH_TOKEN_SECRET,
       issuer: Issuer.REFRESH_TOKEN,
       expiresIn: expiresRefreshSession,
       subject: device.userId,
