@@ -5,12 +5,14 @@ import { ClockUtils } from '@/common/clock-utils.helper';
 import { DateUtils } from '@/common/date-utils.helper';
 import { JwtService } from '@/infra/jwt/jwt.service';
 import { Issuer } from '@/infra/jwt/enums/issue.enum';
+import { HashService } from '@/infra/hash/hash.service';
 
 @Injectable()
 export class SessionService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly jwtService: JwtService,
+    private readonly hashService: HashService,
   ) {}
 
   async create(deviceId: string): Promise<SessionPresenter> {
@@ -44,8 +46,8 @@ export class SessionService {
       subject: device.userId,
     });
 
-    const hashedAccessToken = 'hashed-access-token'; // TODO: hash token
-    const hashedRefreshToken = 'hashed-refresh-token'; // TODO: hash token
+    const hashedAccessToken = await this.hashService.hash(accessToken);
+    const hashedRefreshToken = await this.hashService.hash(refreshToken);
 
     await this.prismaService.$transaction([
       this.prismaService.session.updateMany({
@@ -74,6 +76,8 @@ export class SessionService {
         },
       }),
     ]);
+
+    // TODO: add queue to disable expired sessions
 
     return new SessionPresenter({
       accessToken,
