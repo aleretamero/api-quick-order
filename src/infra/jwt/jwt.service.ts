@@ -2,15 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { JwtService as DefaultJwtService } from '@nestjs/jwt';
 import { Issuer } from '@/infra/jwt/enums/issue.enum';
 
-type OffsetString = `${number}${'s' | 'm' | 'h' | 'd'}`;
+type Offset = `${number}${'s' | 'm' | 'h' | 'd'}` | number;
 
 export type SignJwtOptions<T extends object | Buffer = any> = {
-  expiresIn?: OffsetString;
+  expiresIn?: Offset;
   issuer?: Issuer;
   subject?: string;
 } & {
   secret: string;
-  payload: T;
+  payload?: T;
 };
 
 export type VerifyJwtOptions = {
