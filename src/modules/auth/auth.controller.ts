@@ -47,6 +47,13 @@ export class AuthController {
     return this.authService.login(body, headers);
   }
 
+  @Post('logout')
+  @HttpCode(HttpStatus.OK)
+  @ApiDocs({ response: [401, 500] })
+  logout(): Promise<MessagePresenter> {
+    return Promise.resolve({ message: 'Logout successful' });
+  }
+
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @IsPublic()
@@ -58,7 +65,7 @@ export class AuthController {
   @Post('reset-password')
   @HttpCode(HttpStatus.OK)
   @IsPublic()
-  @ApiDocs({ isPublic: true, response: [404, 500] })
+  @ApiDocs({ isPublic: true, response: [400, 404, 500] })
   resetPassword(
     @Body() body: ResetPasswordDto,
     @Headers() headers: AuthenticateDto,

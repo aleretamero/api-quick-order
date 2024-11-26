@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3333
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2MzI1MTIsImV4cCI6MTczNDM2NjA0NDk4MiwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoidXNlci1pZCJ9.Ff-toCBF4d99eoJc2fSzuIFz5v-yLWGfiZ9GfpLLwOc
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2NTY0NjAsImV4cCI6MTczNDM5MDAxNzM3MCwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoiY20zeW9jajZpMDAwMXp2M3ptazBseXU0biJ9.ZX2hFpQe2qqGMREpn6R83GaAntGhLJrg3qmvd2P0HnI
 
 ### Register
 POST {{baseUrl}}/auth/register
@@ -22,6 +22,11 @@ X-Fingerprint: 1234567890
   "email": "admin@quickorder.com",
   "password": "Senha#123"
 }
+
+### Logout
+POST {{baseUrl}}/auth/logout
+Authorization: Bearer {{token}}
+X-Fingerprint: 1234567890
 
 ### Me
 GET {{baseUrl}}/auth/me
