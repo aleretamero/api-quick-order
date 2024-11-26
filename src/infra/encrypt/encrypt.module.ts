@@ -1,4 +1,8 @@
 import { Module } from '@nestjs/common';
+import { EncryptService } from '@/infra/encrypt/encrypt.service';
 
-@Module({})
+@Module({
+  providers: [EncryptService],
+  exports: [EncryptService],
+})
 export class EncryptModule {}
