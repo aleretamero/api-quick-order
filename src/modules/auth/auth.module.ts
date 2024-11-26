@@ -4,9 +4,10 @@ import { AuthService } from '@/modules/auth/auth.service';
 import { DeviceModule } from '@/modules/device/device.module';
 import { SessionModule } from '@/modules/session/session.module';
 import { PrismaModule } from '@/infra/prisma/prisma.module';
+import { HashModule } from '@/infra/hash/hash.module';
 
 @Module({
-  imports: [PrismaModule, DeviceModule, SessionModule],
+  imports: [PrismaModule, HashModule, DeviceModule, SessionModule],
   controllers: [AuthController],
   providers: [AuthService],
 })

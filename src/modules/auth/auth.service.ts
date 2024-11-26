@@ -5,6 +5,7 @@ import { SessionService } from '@/modules/session/session.service';
 import { AuthenticateDto } from '@/modules/auth/dtos/authenticate.dto';
 import { PrismaService } from '@/infra/prisma/prisma.service';
 import { LoginDto } from '@/modules/auth/dtos/login.dto';
+import { HashService } from '@/infra/hash/hash.service';
 
 @Injectable()
 export class AuthService {
@@ -12,6 +13,7 @@ export class AuthService {
     private readonly prismaService: PrismaService,
     private readonly deviceService: DeviceService,
     private readonly sessionService: SessionService,
+    private readonly hashService: HashService,
   ) {}
 
   async authenticate(
@@ -43,7 +45,10 @@ export class AuthService {
       throw new UnauthorizedException('Invalid credentials'); // TODO: Add i18n
     }
 
-    const isPasswordValid = user.hashedPassword === dto.password; // TODO: Add password hashing
+    const isPasswordValid = await this.hashService.compare(
+      dto.password,
+      user.hashedPassword,
+    );
 
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid credentials'); // TODO: Add i18n
