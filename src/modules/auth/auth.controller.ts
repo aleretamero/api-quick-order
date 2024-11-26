@@ -18,6 +18,6 @@ export class AuthController {
 
   @Get('me')
   me() {
-    return 'me';
+    return this.authService.me('user-id');
   }
 }

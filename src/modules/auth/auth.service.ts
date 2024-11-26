@@ -1,4 +1,8 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { DeviceService } from '@/modules/device/device.service';
 import { SessionPresenter } from '@/modules/session/presenters/session.presenter';
 import { SessionService } from '@/modules/session/session.service';
@@ -7,6 +11,7 @@ import { PrismaService } from '@/infra/prisma/prisma.service';
 import { LoginDto } from '@/modules/auth/dtos/login.dto';
 import { HashService } from '@/infra/hash/hash.service';
 import { I18nService } from '@/infra/i18n/i18n-service';
+import { UserPresenter } from '@/modules/user/presenters/user.presenter';
 
 @Injectable()
 export class AuthService {
@@ -61,5 +66,21 @@ export class AuthService {
     }
 
     return this.authenticate(user.id, headers);
+  }
+
+  async me(userId: string): Promise<UserPresenter> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        id: userId,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        this.i18nService.t('user.not_found', { userId }),
+      );
+    }
+
+    return new UserPresenter(user);
   }
 }
