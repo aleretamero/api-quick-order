@@ -5,9 +5,10 @@ import { DeviceModule } from '@/modules/device/device.module';
 import { SessionModule } from '@/modules/session/session.module';
 import { PrismaModule } from '@/infra/prisma/prisma.module';
 import { HashModule } from '@/infra/hash/hash.module';
+import { I18nModule } from '@/infra/i18n/i18n-module';
 
 @Module({
-  imports: [PrismaModule, HashModule, DeviceModule, SessionModule],
+  imports: [PrismaModule, I18nModule, HashModule, DeviceModule, SessionModule],
   controllers: [AuthController],
   providers: [AuthService],
 })

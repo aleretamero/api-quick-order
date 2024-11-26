@@ -6,6 +6,7 @@ import { AuthenticateDto } from '@/modules/auth/dtos/authenticate.dto';
 import { PrismaService } from '@/infra/prisma/prisma.service';
 import { LoginDto } from '@/modules/auth/dtos/login.dto';
 import { HashService } from '@/infra/hash/hash.service';
+import { I18nService } from '@/infra/i18n/i18n-service';
 
 @Injectable()
 export class AuthService {
@@ -14,6 +15,7 @@ export class AuthService {
     private readonly deviceService: DeviceService,
     private readonly sessionService: SessionService,
     private readonly hashService: HashService,
+    private readonly i18nService: I18nService,
   ) {}
 
   async authenticate(
@@ -42,7 +44,9 @@ export class AuthService {
     });
 
     if (!user) {
-      throw new UnauthorizedException('Invalid credentials'); // TODO: Add i18n
+      throw new UnauthorizedException(
+        this.i18nService.t('auth.invalid_credentials'),
+      );
     }
 
     const isPasswordValid = await this.hashService.compare(
@@ -51,7 +55,9 @@ export class AuthService {
     );
 
     if (!isPasswordValid) {
-      throw new UnauthorizedException('Invalid credentials'); // TODO: Add i18n
+      throw new UnauthorizedException(
+        this.i18nService.t('auth.invalid_credentials'),
+      );
     }
 
     return this.authenticate(user.id, headers);
