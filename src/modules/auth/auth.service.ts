@@ -192,8 +192,11 @@ export class AuthService {
       throw new BadRequestException('UserToken expired'); // TODO: i18n
     }
 
-    // TODO: decrypt code
-    if (userToken.encryptedCode !== dto.code) {
+    const decryptedCode = await this.encryptService.decrypt(
+      this.envService.ENCRYPT_TOKEN_SECRET,
+      userToken.encryptedCode,
+    );
+    if (decryptedCode !== dto.code) {
       throw new BadRequestException('Invalid code'); // TODO: i18n
     }
 
