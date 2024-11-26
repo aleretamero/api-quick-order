@@ -48,6 +48,17 @@ export class AuthController {
     return this.authService.login(body, headers);
   }
 
+  @Post('refresh')
+  @IsPublic()
+  @HttpCode(HttpStatus.OK)
+  @ApiDocs({ isPublic: true, response: [401, 500] })
+  refresh(): Promise<SessionPresenter> {
+    return Promise.resolve({
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+    });
+  }
+
   @Post('logout')
   @HttpCode(HttpStatus.OK)
   @ApiDocs({ response: [401, 404, 500] })
