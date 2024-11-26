@@ -77,7 +77,7 @@ export class AuthService {
 
     if (!user) {
       throw new NotFoundException(
-        this.i18nService.t('user.not_found', { userId }),
+        this.i18nService.t('user.not_found_with_id', { userId }),
       );
     }
 
