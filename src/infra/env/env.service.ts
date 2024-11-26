@@ -6,6 +6,10 @@ import { ClockUtils, OffsetString } from '@/common/helpers/clock-utils.helper';
 export class EnvService {
   constructor(private readonly configService: ConfigService) {}
 
+  get PORT(): number {
+    return this.configService.getOrThrow<number>('PORT');
+  }
+
   get JWT_ACCESS_TOKEN_SECRET(): string {
     return this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_SECRET');
   }
