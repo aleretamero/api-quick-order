@@ -21,6 +21,7 @@ import { Role } from '@/modules/user/enums/role.enum';
 import { MessagePresenter } from '@/common/presenters/message.presenter';
 import { ForgotPasswordDto } from '@/modules/auth/dtos/forgot-password.dto';
 import { ResetPasswordDto } from '@/modules/auth/dtos/reset-password.dto';
+import { Fingerprint } from '@/common/decorators/fingerprint.decorator';
 
 @Controller('auth')
 export class AuthController {
@@ -49,9 +50,12 @@ export class AuthController {
 
   @Post('logout')
   @HttpCode(HttpStatus.OK)
-  @ApiDocs({ response: [401, 500] })
-  logout(): Promise<MessagePresenter> {
-    return Promise.resolve({ message: 'Logout successful' });
+  @ApiDocs({ response: [401, 404, 500] })
+  logout(
+    @CurrentUser('id') userId: string,
+    @Fingerprint() fingerprint: string,
+  ): Promise<MessagePresenter> {
+    return this.authService.loggout(userId, fingerprint);
   }
 
   @Post('forgot-password')

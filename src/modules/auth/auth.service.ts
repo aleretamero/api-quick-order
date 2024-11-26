@@ -110,6 +110,35 @@ export class AuthService {
     return this.authenticate(user.id, headers);
   }
 
+  async loggout(
+    userId: string,
+    fingerprint: string,
+  ): Promise<MessagePresenter> {
+    const device = await this.prismaService.device.findUnique({
+      where: {
+        fingerprint_userId: {
+          fingerprint,
+          userId,
+        },
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!device) {
+      throw new NotFoundException(
+        this.i18nService.t('device.not_found_with_fingerprint', {
+          fingerprint,
+        }),
+      );
+    }
+
+    await this.sessionService.loggedOut(device.id);
+
+    return new MessagePresenter(this.i18nService.t('auth.logged_out'));
+  }
+
   async forgotPassword(dto: ForgotPasswordDto): Promise<MessagePresenter> {
     const user = await this.prismaService.user.findUnique({
       where: {
