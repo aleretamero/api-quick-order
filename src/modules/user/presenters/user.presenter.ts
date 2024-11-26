@@ -1,15 +1,16 @@
+import { Role } from '@/modules/user/enums/role.enum';
 import { User } from '@prisma/client';
 
 type UserPresenterProps = User;
 
 export class UserPresenter {
-  constructor(private readonly props: UserPresenterProps) {}
+  id: string;
+  email: string;
+  role: Role;
 
-  toJSON() {
-    return {
-      id: this.props.id,
-      email: this.props.email,
-      role: this.props.role,
-    };
+  constructor(props: UserPresenterProps) {
+    this.id = props.id;
+    this.email = props.email;
+    this.role = props.role as Role;
   }
 }
