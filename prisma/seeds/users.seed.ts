@@ -1,13 +1,12 @@
-import { Role } from '@/modules/user/enums/role.enum';
 import { PrismaClient, Prisma } from '@prisma/client';
+import * as bcrypt from 'bcrypt';
 
 export async function usersSeed(prisma: PrismaClient) {
   const usersData: Prisma.UserCreateInput[] = [
     {
-      id: 'user-id', // TODO: generate id
-      email: 'admin@quickorder.com', // TODO: use environment variable
-      hashedPassword: 'hashed-password', // TODO: hash password
-      role: Role.ADMIN,
+      email: process.env.ADMIN_EMAIL!,
+      hashedPassword: await bcrypt.hash(process.env.ADMIN_PASSWORD!, 10),
+      role: 'ADMIN',
     },
   ];
 
