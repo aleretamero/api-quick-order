@@ -20,6 +20,7 @@ import { ResetPasswordDto } from '@/modules/auth/dtos/reset-password.dto';
 import { UserTokenType } from '@/modules/user-token/enums/user-token-type';
 import { UserTokenStatus } from '@/modules/user-token/enums/user-token-status';
 import { DateUtils } from '@/common/helpers/date-utils.helper';
+import { ClockUtils } from '@/common/helpers/clock-utils.helper';
 
 @Injectable()
 export class AuthService {
@@ -117,7 +118,32 @@ export class AuthService {
       );
     }
 
+    const code = '123456'; // TODO: generate code
+
+    await this.prismaService.$transaction([
+      this.prismaService.userToken.updateMany({
+        where: {
+          userId: user.id,
+          type: UserTokenType.RESET_PASSWORD,
+          status: UserTokenStatus.PENDING,
+        },
+        data: {
+          status: UserTokenStatus.CANCELLED,
+        },
+      }),
+      this.prismaService.userToken.create({
+        data: {
+          userId: user.id,
+          type: UserTokenType.RESET_PASSWORD,
+          encryptedCode: code, // TODO: encrypt code
+          status: UserTokenStatus.PENDING,
+          expiresAt: DateUtils.getDate(ClockUtils.getFutureTimestamp('10m')), // TODO: add expiration time
+        },
+      }),
+    ]);
+
     // TODO: Send email with reset password link
+    console.log('Reset password code:', code);
 
     return new MessagePresenter(
       this.i18nService.t('auth.email_sent_to_reset_password'),
