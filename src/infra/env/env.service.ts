@@ -10,6 +10,18 @@ export class EnvService {
     return this.configService.getOrThrow<number>('PORT');
   }
 
+  get NODE_ENV(): string {
+    return this.configService.getOrThrow<string>('NODE_ENV');
+  }
+
+  get APP_NAME(): string {
+    return this.configService.getOrThrow<string>('APP_NAME');
+  }
+
+  get API_VERSION(): number {
+    return this.configService.getOrThrow<number>('API_VERSION');
+  }
+
   get JWT_ACCESS_TOKEN_SECRET(): string {
     return this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_SECRET');
   }
@@ -40,5 +52,9 @@ export class EnvService {
     }
 
     return env;
+  }
+
+  get DOCS_PATH(): string {
+    return this.configService.getOrThrow<string>('DOCS_PATH');
   }
 }
