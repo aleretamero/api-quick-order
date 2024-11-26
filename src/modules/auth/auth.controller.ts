@@ -18,6 +18,7 @@ import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 import { RegisterDto } from '@/modules/auth/dtos/register.dto';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/modules/user/enums/role.enum';
+import { MessagePresenter } from '@/common/presenters/message.presenter';
 
 @Controller('auth')
 export class AuthController {
@@ -48,5 +49,13 @@ export class AuthController {
   @ApiDocs({ response: [401, 500] })
   me(@CurrentUser('id') userId: string): Promise<UserPresenter> {
     return this.authService.me(userId);
+  }
+
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @IsPublic()
+  @ApiDocs({ isPublic: true, response: [500] })
+  forgotPassword(): Promise<MessagePresenter> {
+    return Promise.resolve({ message: 'Email sent' });
   }
 }

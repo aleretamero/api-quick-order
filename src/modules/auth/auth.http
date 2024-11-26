@@ -26,3 +26,11 @@ X-Fingerprint: 1234567890
 ### Me
 GET {{baseUrl}}/auth/me
 Authorization: Bearer {{token}}
+
+### Forgot Password
+POST {{baseUrl}}/auth/forgot-password
+Content-Type: application/json
+
+{
+  "email": "admin@quickorder.com"
+}
