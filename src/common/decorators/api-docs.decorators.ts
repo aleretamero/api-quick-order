@@ -77,7 +77,7 @@ export function ApiDocs(options?: ApiDocsOptions) {
       ApiHeader({
         name: 'accept-language',
         required: false,
-        enum: ['pt', 'en', 'es'],
+        enum: ['pt'],
       }),
     );
   }
