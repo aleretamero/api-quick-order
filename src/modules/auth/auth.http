@@ -1,5 +1,5 @@
 @baseUrl = http://localhost:3333
-@token = 1234567890
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2MjI1NDQsImV4cCI6MTczNDM1NjA2NjgzNSwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoidXNlci1pZCJ9.-D268whl_luFkbGPvJFQrAeeZsNu1j73mwdRa3yLKMs
 
 ### Login
 POST {{baseUrl}}/auth/login
