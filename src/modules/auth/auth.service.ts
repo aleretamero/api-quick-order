@@ -119,30 +119,9 @@ export class AuthService {
 
   async loggout(
     userId: string,
-    fingerprint: string,
+    fingerprint: string | undefined,
   ): Promise<MessagePresenter> {
-    const device = await this.prismaService.device.findUnique({
-      where: {
-        fingerprint_userId: {
-          fingerprint,
-          userId,
-        },
-      },
-      select: {
-        id: true,
-      },
-    });
-
-    if (!device) {
-      throw new NotFoundException(
-        this.i18nService.t('device.not_found_with_fingerprint', {
-          fingerprint,
-        }),
-      );
-    }
-
-    await this.sessionService.loggedOut(device.id);
-
+    await this.deviceService.loggout(userId, fingerprint);
     return new MessagePresenter(this.i18nService.t('auth.logged_out'));
   }
 

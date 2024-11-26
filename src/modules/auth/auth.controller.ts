@@ -54,7 +54,11 @@ export class AuthController {
   @IsPublic()
   @HttpCode(HttpStatus.OK)
   @UseGuards(RefreshAuthGuard)
-  @ApiDocs({ isPublic: true, response: [401, 500] })
+  @ApiDocs({
+    isPublic: true,
+    response: [400, 401, 500],
+    headers: [{ name: 'x-refresh-token' }],
+  })
   refresh(
     @CurrentUser('id') userId: string,
     @Headers() headers: AuthenticateDto,
@@ -67,7 +71,7 @@ export class AuthController {
   @ApiDocs({ response: [401, 404, 500] })
   logout(
     @CurrentUser('id') userId: string,
-    @Fingerprint() fingerprint: string,
+    @Fingerprint() fingerprint?: string,
   ): Promise<MessagePresenter> {
     return this.authService.loggout(userId, fingerprint);
   }
