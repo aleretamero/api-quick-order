@@ -3,12 +3,14 @@ import { AppModule } from '@/app.module';
 import { EnvService } from '@/infra/env/env.service';
 
 import globalSetupConfig from '@/configs/global-setup.config';
+import docsSetupConfig from '@/configs/docs-setup.config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const envService = app.get(EnvService);
 
   globalSetupConfig(app);
+  docsSetupConfig(app);
 
   await app.listen(envService.PORT);
 }
