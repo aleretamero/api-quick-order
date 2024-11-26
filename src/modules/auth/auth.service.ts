@@ -185,11 +185,15 @@ export class AuthService {
     });
 
     if (!userToken) {
-      throw new NotFoundException('UserToken not found'); // TODO: i18n
+      throw new NotFoundException(
+        this.i18nService.t('user_token.not_found_with_type', {
+          type: UserTokenType.RESET_PASSWORD,
+        }),
+      );
     }
 
     if (userToken.expiresAt < DateUtils.getDate()) {
-      throw new BadRequestException('UserToken expired'); // TODO: i18n
+      throw new BadRequestException(this.i18nService.t('user_token.expired'));
     }
 
     const decryptedCode = await this.encryptService.decrypt(
@@ -197,7 +201,9 @@ export class AuthService {
       userToken.encryptedCode,
     );
     if (decryptedCode !== dto.code) {
-      throw new BadRequestException('Invalid code'); // TODO: i18n
+      throw new BadRequestException(
+        this.i18nService.t('user_token.invalid_code'),
+      );
     }
 
     await this.prismaService.$transaction([
