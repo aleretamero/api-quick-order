@@ -1,4 +1,5 @@
-@baseUrl = http://localhost:3000
+@baseUrl = http://localhost:3333
+@token = 1234567890
 
 ### Login
 POST {{baseUrl}}/auth/login
@@ -9,3 +10,7 @@ X-Fingerprint: 1234567890
     "email": "admin@quickorder.com",
     "password": "hashed-password"
 }
+
+### Me
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{token}}
