@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/infra/prisma/prisma.service';
 import { DevicePresenter } from '@/modules/device/presenters/device.presenter';
 import { I18nService } from '@/infra/i18n/i18n-service';
+import { SessionService } from '@/modules/session/session.service';
 
 @Injectable()
 export class DeviceService {
@@ -10,6 +11,7 @@ export class DeviceService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly i18nService: I18nService,
+    private readonly sessionService: SessionService,
   ) {}
 
   async upsert(
@@ -44,6 +46,32 @@ export class DeviceService {
         fingerprint,
       },
     });
+
+    return new DevicePresenter(device);
+  }
+
+  async loggout(
+    userId: string,
+    fingerprint: string = this.DEFAULT_FINGERPRINT,
+  ): Promise<DevicePresenter> {
+    const device = await this.prismaService.device.findUnique({
+      where: {
+        fingerprint_userId: {
+          fingerprint,
+          userId,
+        },
+      },
+    });
+
+    if (!device) {
+      throw new NotFoundException(
+        this.i18nService.t('device.not_found_with_fingerprint', {
+          fingerprint,
+        }),
+      );
+    }
+
+    await this.sessionService.loggedOut(device.id);
 
     return new DevicePresenter(device);
   }
