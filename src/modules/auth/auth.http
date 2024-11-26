@@ -34,3 +34,11 @@ Content-Type: application/json
 {
   "email": "admin2@quickorder.com"
 }
+
+### Reset Password
+POST {{baseUrl}}/auth/reset-password
+Content-Type: application/json
+
+{
+  "email": "admin2@quickorder.com"
+}

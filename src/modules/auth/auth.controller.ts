@@ -46,17 +46,28 @@ export class AuthController {
     return this.authService.login(body, headers);
   }
 
+  @Post('forgot-password')
+  @HttpCode(HttpStatus.OK)
+  @IsPublic()
+  @ApiDocs({ isPublic: true, response: [400, 404, 500] })
+  forgotPassword(@Body() body: ForgotPasswordDto): Promise<MessagePresenter> {
+    return this.authService.forgotPassword(body);
+  }
+
+  @Post('reset-password')
+  @HttpCode(HttpStatus.OK)
+  @IsPublic()
+  @ApiDocs({ isPublic: true, response: [404, 500] })
+  resetPassword(): Promise<SessionPresenter> {
+    return Promise.resolve({
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+    });
+  }
+
   @Get('me')
   @ApiDocs({ response: [401, 500] })
   me(@CurrentUser('id') userId: string): Promise<UserPresenter> {
     return this.authService.me(userId);
-  }
-
-  @Post('forgot-password')
-  @HttpCode(HttpStatus.OK)
-  @IsPublic()
-  @ApiDocs({ isPublic: true, response: [404, 500] })
-  forgotPassword(@Body() body: ForgotPasswordDto): Promise<MessagePresenter> {
-    return this.authService.forgotPassword(body);
   }
 }
