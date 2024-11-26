@@ -36,7 +36,7 @@ export class SessionService {
 
     if (!device) {
       throw new NotFoundException(
-        this.i18nService.t('device.not_found', { deviceId }),
+        this.i18nService.t('device.not_found_with_id', { deviceId }),
       );
     }
 
