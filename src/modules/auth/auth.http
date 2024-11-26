@@ -1,6 +1,16 @@
 @baseUrl = http://localhost:3333
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2MjI1NDQsImV4cCI6MTczNDM1NjA2NjgzNSwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoidXNlci1pZCJ9.-D268whl_luFkbGPvJFQrAeeZsNu1j73mwdRa3yLKMs
 
+### Register
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+X-Fingerprint: 1234567890
+
+{
+    "email": "admin@quickorder.com",
+    "password": "hashed-password"
+}
+
 ### Login
 POST {{baseUrl}}/auth/login
 Content-Type: application/json

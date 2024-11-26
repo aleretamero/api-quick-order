@@ -20,6 +20,16 @@ import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
+  @Post('register')
+  @IsPublic()
+  @ApiDocs({ isPublic: true, response: [500] })
+  register(): Promise<SessionPresenter> {
+    return Promise.resolve({
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+    });
+  }
+
   @Post('login')
   @IsPublic()
   @HttpCode(HttpStatus.OK)
