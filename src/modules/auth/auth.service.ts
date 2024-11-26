@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -15,15 +16,19 @@ import { LoginDto } from '@/modules/auth/dtos/login.dto';
 import { RegisterDto } from '@/modules/auth/dtos/register.dto';
 import { ForgotPasswordDto } from '@/modules/auth/dtos/forgot-password.dto';
 import { MessagePresenter } from '@/common/presenters/message.presenter';
+import { ResetPasswordDto } from '@/modules/auth/dtos/reset-password.dto';
+import { UserTokenType } from '@/modules/user-token/enums/user-token-type';
+import { UserTokenStatus } from '@/modules/user-token/enums/user-token-status';
+import { DateUtils } from '@/common/helpers/date-utils.helper';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
-    private readonly deviceService: DeviceService,
-    private readonly sessionService: SessionService,
     private readonly hashService: HashService,
     private readonly i18nService: I18nService,
+    private readonly deviceService: DeviceService,
+    private readonly sessionService: SessionService,
   ) {}
 
   async authenticate(
@@ -117,6 +122,68 @@ export class AuthService {
     return new MessagePresenter(
       this.i18nService.t('auth.email_sent_to_reset_password'),
     );
+  }
+
+  async resetPassword(
+    dto: ResetPasswordDto,
+    headers: AuthenticateDto,
+  ): Promise<SessionPresenter> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        this.i18nService.t('user.not_found_with_email', { email: dto.email }),
+      );
+    }
+
+    const userToken = await this.prismaService.userToken.findFirst({
+      where: {
+        userId: user.id,
+        type: UserTokenType.RESET_PASSWORD,
+        status: UserTokenStatus.PENDING,
+      },
+    });
+
+    if (!userToken) {
+      throw new NotFoundException('UserToken not found'); // TODO: i18n
+    }
+
+    if (userToken.expiresAt < DateUtils.getDate()) {
+      throw new BadRequestException('UserToken expired'); // TODO: i18n
+    }
+
+    // TODO: decrypt code
+    if (userToken.encryptedCode !== dto.code) {
+      throw new BadRequestException('Invalid code'); // TODO: i18n
+    }
+
+    await this.prismaService.$transaction([
+      this.prismaService.userToken.update({
+        where: {
+          id: userToken.id,
+        },
+        data: {
+          status: UserTokenStatus.FULFILLED,
+        },
+      }),
+      this.prismaService.user.update({
+        where: {
+          id: user.id,
+        },
+        data: {
+          hashedPassword: await this.hashService.hash(dto.password),
+        },
+      }),
+    ]);
+
+    return this.authenticate(user.id, headers);
   }
 
   async me(userId: string): Promise<UserPresenter> {

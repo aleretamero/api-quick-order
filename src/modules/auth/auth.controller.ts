@@ -20,6 +20,7 @@ import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/modules/user/enums/role.enum';
 import { MessagePresenter } from '@/common/presenters/message.presenter';
 import { ForgotPasswordDto } from '@/modules/auth/dtos/forgot-password.dto';
+import { ResetPasswordDto } from '@/modules/auth/dtos/reset-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -58,11 +59,11 @@ export class AuthController {
   @HttpCode(HttpStatus.OK)
   @IsPublic()
   @ApiDocs({ isPublic: true, response: [404, 500] })
-  resetPassword(): Promise<SessionPresenter> {
-    return Promise.resolve({
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-    });
+  resetPassword(
+    @Body() body: ResetPasswordDto,
+    @Headers() headers: AuthenticateDto,
+  ): Promise<SessionPresenter> {
+    return this.authService.resetPassword(body, headers);
   }
 
   @Get('me')
