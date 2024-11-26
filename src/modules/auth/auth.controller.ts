@@ -16,16 +16,21 @@ import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { UserPresenter } from '@/modules/user/presenters/user.presenter';
 import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 import { RegisterDto } from '@/modules/auth/dtos/register.dto';
+import { Roles } from '@/common/decorators/roles.decorator';
+import { Role } from '@/modules/user/enums/role.enum';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Post('register')
-  @IsPublic()
-  @ApiDocs({ isPublic: true, response: [500] })
-  register(@Body() body: RegisterDto): Promise<SessionPresenter> {
-    return this.authService.register(body);
+  @Roles(Role.ADMIN)
+  @ApiDocs({ response: [400, 401, 500] })
+  register(
+    @Body() body: RegisterDto,
+    @Headers() headers: AuthenticateDto,
+  ): Promise<SessionPresenter> {
+    return this.authService.register(body, headers);
   }
 
   @Post('login')
@@ -40,7 +45,7 @@ export class AuthController {
   }
 
   @Get('me')
-  @ApiDocs({ isPublic: true, response: [401, 500] })
+  @ApiDocs({ response: [401, 500] })
   me(@CurrentUser('id') userId: string): Promise<UserPresenter> {
     return this.authService.me(userId);
   }

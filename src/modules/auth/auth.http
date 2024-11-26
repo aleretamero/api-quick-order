@@ -1,14 +1,16 @@
 @baseUrl = http://localhost:3333
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2MjI1NDQsImV4cCI6MTczNDM1NjA2NjgzNSwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoidXNlci1pZCJ9.-D268whl_luFkbGPvJFQrAeeZsNu1j73mwdRa3yLKMs
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2MzI1MTIsImV4cCI6MTczNDM2NjA0NDk4MiwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoidXNlci1pZCJ9.Ff-toCBF4d99eoJc2fSzuIFz5v-yLWGfiZ9GfpLLwOc
 
 ### Register
 POST {{baseUrl}}/auth/register
+Authorization: Bearer {{token}}
 Content-Type: application/json
 X-Fingerprint: 1234567890
 
 {
-    "email": "admin@quickorder.com",
-    "password": "hashed-password"
+  "email": "user02@quickorder.com",
+  "password": "hashed-password",
+  "role": "EMPLOYEE"
 }
 
 ### Login
@@ -17,8 +19,8 @@ Content-Type: application/json
 X-Fingerprint: 1234567890
 
 {
-    "email": "admin@quickorder.com",
-    "password": "hashed-password"
+  "email": "admin@quickorder.com",
+  "password": "hashed-password"
 }
 
 ### Me
