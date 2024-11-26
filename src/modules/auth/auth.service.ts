@@ -23,6 +23,7 @@ import { DateUtils } from '@/common/helpers/date-utils.helper';
 import { ClockUtils } from '@/common/helpers/clock-utils.helper';
 import { EncryptService } from '@/infra/encrypt/encrypt.service';
 import { EnvService } from '@/infra/env/env.service';
+import { CodeUtils } from '@/common/helpers/code-utils.helper';
 
 @Injectable()
 export class AuthService {
@@ -122,7 +123,7 @@ export class AuthService {
       );
     }
 
-    const code = '123456'; // TODO: generate code
+    const code = CodeUtils.generateNumeric(6);
 
     await this.prismaService.$transaction([
       this.prismaService.userToken.updateMany({
