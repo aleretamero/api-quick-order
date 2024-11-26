@@ -32,5 +32,5 @@ POST {{baseUrl}}/auth/forgot-password
 Content-Type: application/json
 
 {
-  "email": "admin@quickorder.com"
+  "email": "admin2@quickorder.com"
 }

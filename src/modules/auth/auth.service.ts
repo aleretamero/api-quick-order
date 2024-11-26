@@ -13,6 +13,8 @@ import { AuthenticateDto } from '@/modules/auth/dtos/authenticate.dto';
 import { UserPresenter } from '@/modules/user/presenters/user.presenter';
 import { LoginDto } from '@/modules/auth/dtos/login.dto';
 import { RegisterDto } from '@/modules/auth/dtos/register.dto';
+import { ForgotPasswordDto } from '@/modules/auth/dtos/forgot-password.dto';
+import { MessagePresenter } from '@/common/presenters/message.presenter';
 
 @Injectable()
 export class AuthService {
@@ -95,6 +97,26 @@ export class AuthService {
     }
 
     return this.authenticate(user.id, headers);
+  }
+
+  async forgotPassword(dto: ForgotPasswordDto): Promise<MessagePresenter> {
+    const user = await this.prismaService.user.findUnique({
+      where: {
+        email: dto.email,
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundException(
+        this.i18nService.t('user.not_found_with_email', { email: dto.email }),
+      );
+    }
+
+    // TODO: Send email with reset password link
+
+    return new MessagePresenter(
+      this.i18nService.t('auth.email_sent_to_reset_password'),
+    );
   }
 
   async me(userId: string): Promise<UserPresenter> {

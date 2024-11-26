@@ -19,6 +19,7 @@ import { RegisterDto } from '@/modules/auth/dtos/register.dto';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/modules/user/enums/role.enum';
 import { MessagePresenter } from '@/common/presenters/message.presenter';
+import { ForgotPasswordDto } from '@/modules/auth/dtos/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -54,8 +55,8 @@ export class AuthController {
   @Post('forgot-password')
   @HttpCode(HttpStatus.OK)
   @IsPublic()
-  @ApiDocs({ isPublic: true, response: [500] })
-  forgotPassword(): Promise<MessagePresenter> {
-    return Promise.resolve({ message: 'Email sent' });
+  @ApiDocs({ isPublic: true, response: [404, 500] })
+  forgotPassword(@Body() body: ForgotPasswordDto): Promise<MessagePresenter> {
+    return this.authService.forgotPassword(body);
   }
 }
