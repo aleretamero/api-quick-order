@@ -6,4 +6,5 @@ export default {
   invalid_credentials: 'Credenciais inválidas',
   email_already_exists: 'Email já cadastrado',
   forbidden_for_role: 'Acesso negado para o cargo $t(user.roles.{role})',
+  logged_out: 'Deslogado com sucesso',
 } satisfies AuthI18n;
