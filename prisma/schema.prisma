@@ -14,13 +14,14 @@ datasource db {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  email          String   @unique
-  hashedPassword String   @map("hashed_password")
+  id             String      @id @default(cuid())
+  email          String      @unique
+  hashedPassword String      @map("hashed_password")
   role           String
-  createdAt      DateTime @default(now()) @map("created_at")
-  updatedAt      DateTime @default(now()) @updatedAt @map("updated_at")
+  createdAt      DateTime    @default(now()) @map("created_at")
+  updatedAt      DateTime    @default(now()) @updatedAt @map("updated_at")
   devices        Device[]
+  token          UserToken[]
 
   @@map("users")
 }
@@ -52,4 +53,19 @@ model Session {
   updatedAt          DateTime  @default(now()) @updatedAt @map("updated_at")
 
   @@map("sessions")
+}
+
+model UserToken {
+  id            String   @id @default(uuid()) @db.VarChar(50)
+  userId        String   @map("user_id") @db.VarChar(50)
+  type          String
+  status        String
+  encryptedCode String   @map("encrypted_code") @db.Text
+  expiresAt     DateTime @map("expires_at") @db.Timestamp
+  createdAt     DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt     DateTime @updatedAt @map("updated_at") @db.Timestamp
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("user_tokens")
 }
