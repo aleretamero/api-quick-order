@@ -1,12 +1,16 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '@/infra/prisma/prisma.service';
 import { DevicePresenter } from '@/modules/device/presenters/device.presenter';
+import { I18nService } from '@/infra/i18n/i18n-service';
 
 @Injectable()
 export class DeviceService {
   private readonly DEFAULT_FINGERPRINT = 'UNKNOWN';
 
-  constructor(private readonly prismaService: PrismaService) {}
+  constructor(
+    private readonly prismaService: PrismaService,
+    private readonly i18nService: I18nService,
+  ) {}
 
   async upsert(
     userId: string,
@@ -22,7 +26,9 @@ export class DeviceService {
     });
 
     if (!user) {
-      throw new NotFoundException(`User not found with id: ${userId}`); // TODO: i18n
+      throw new NotFoundException(
+        this.i18nService.t('user.not_found', { userId }),
+      );
     }
 
     const device = await this.prismaService.device.upsert({
