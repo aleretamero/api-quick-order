@@ -11,7 +11,7 @@ export default (app: INestApplication) => {
 
   const config = new DocumentBuilder()
     .setTitle(appName)
-    .setVersion(apiVersion.toString())
+    .setVersion(`v${apiVersion}`)
     .addBearerAuth()
     .build();
 
