@@ -8,6 +8,9 @@ import { Issuer } from '@/infra/jwt/enums/issue.enum';
 import { HashService } from '@/infra/hash/hash.service';
 import { EnvService } from '@/infra/env/env.service';
 import { I18nService } from '@/infra/i18n/i18n-service';
+import { EventService } from '@/infra/event/event.service';
+import { Events } from '@/infra/event/enums/events.enum';
+import { CreateSessionEvent } from '@/modules/session/events/create-session.event';
 
 @Injectable()
 export class SessionService {
@@ -17,6 +20,7 @@ export class SessionService {
     private readonly hashService: HashService,
     private readonly envService: EnvService,
     private readonly i18nService: I18nService,
+    private readonly eventService: EventService,
   ) {}
 
   async create(deviceId: string): Promise<SessionPresenter> {
@@ -59,7 +63,7 @@ export class SessionService {
     const hashedAccessToken = await this.hashService.hash(accessToken);
     const hashedRefreshToken = await this.hashService.hash(refreshToken);
 
-    await this.prismaService.$transaction([
+    const [, session] = await this.prismaService.$transaction([
       this.prismaService.session.updateMany({
         where: {
           deviceId: device.id,
@@ -76,6 +80,7 @@ export class SessionService {
           hashedRefreshToken,
           expiresAt: DateUtils.getDate(expiresSession),
         },
+        select: { id: true },
       }),
       this.prismaService.device.update({
         where: {
@@ -87,7 +92,10 @@ export class SessionService {
       }),
     ]);
 
-    // TODO: add queue to disable expired sessions
+    this.eventService.emit(
+      Events.SESSION_CREATE,
+      new CreateSessionEvent(session.id),
+    );
 
     return new SessionPresenter({
       accessToken,

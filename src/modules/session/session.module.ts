@@ -5,9 +5,17 @@ import { JwtModule } from '@/infra/jwt/jwt.module';
 import { HashModule } from '@/infra/hash/hash.module';
 import { EnvModule } from '@/infra/env/env.module';
 import { I18nModule } from '@/infra/i18n/i18n-module';
+import { EventModule } from '@/infra/event/event.module';
 
 @Module({
-  imports: [PrismaModule, I18nModule, EnvModule, JwtModule, HashModule],
+  imports: [
+    PrismaModule,
+    I18nModule,
+    EventModule,
+    EnvModule,
+    JwtModule,
+    HashModule,
+  ],
   providers: [SessionService],
   exports: [SessionService],
 })
