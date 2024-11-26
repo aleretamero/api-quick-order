@@ -6,6 +6,6 @@ export class LoginDto {
   email!: string;
 
   @IsNotEmpty()
-  @IsString() // TODO: Add password validation
+  @IsString()
   password!: string;
 }
