@@ -21,12 +21,16 @@ import { UserTokenType } from '@/modules/user-token/enums/user-token-type';
 import { UserTokenStatus } from '@/modules/user-token/enums/user-token-status';
 import { DateUtils } from '@/common/helpers/date-utils.helper';
 import { ClockUtils } from '@/common/helpers/clock-utils.helper';
+import { EncryptService } from '@/infra/encrypt/encrypt.service';
+import { EnvService } from '@/infra/env/env.service';
 
 @Injectable()
 export class AuthService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly hashService: HashService,
+    private readonly encryptService: EncryptService,
+    private readonly envService: EnvService,
     private readonly i18nService: I18nService,
     private readonly deviceService: DeviceService,
     private readonly sessionService: SessionService,
@@ -135,9 +139,12 @@ export class AuthService {
         data: {
           userId: user.id,
           type: UserTokenType.RESET_PASSWORD,
-          encryptedCode: code, // TODO: encrypt code
+          encryptedCode: await this.encryptService.encrypt(
+            this.envService.ENCRYPT_TOKEN_SECRET,
+            code,
+          ),
           status: UserTokenStatus.PENDING,
-          expiresAt: DateUtils.getDate(ClockUtils.getFutureTimestamp('10m')), // TODO: add expiration time
+          expiresAt: DateUtils.getDate(ClockUtils.getFutureTimestamp('10m')),
         },
       }),
     ]);

@@ -6,9 +6,19 @@ import { SessionModule } from '@/modules/session/session.module';
 import { PrismaModule } from '@/infra/prisma/prisma.module';
 import { HashModule } from '@/infra/hash/hash.module';
 import { I18nModule } from '@/infra/i18n/i18n-module';
+import { EncryptModule } from '@/infra/encrypt/encrypt.module';
+import { EnvModule } from '@/infra/env/env.module';
 
 @Module({
-  imports: [PrismaModule, I18nModule, HashModule, DeviceModule, SessionModule],
+  imports: [
+    PrismaModule,
+    EnvModule,
+    I18nModule,
+    HashModule,
+    EncryptModule,
+    DeviceModule,
+    SessionModule,
+  ],
   controllers: [AuthController],
   providers: [AuthService],
 })
