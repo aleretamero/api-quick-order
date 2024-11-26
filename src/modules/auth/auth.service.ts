@@ -110,6 +110,13 @@ export class AuthService {
     return this.authenticate(user.id, headers);
   }
 
+  async refresh(
+    userId: string,
+    headers: AuthenticateDto,
+  ): Promise<SessionPresenter> {
+    return this.authenticate(userId, headers);
+  }
+
   async loggout(
     userId: string,
     fingerprint: string,

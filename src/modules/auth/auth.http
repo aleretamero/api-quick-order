@@ -1,6 +1,6 @@
 @baseUrl = http://localhost:3333
 @token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2NTY0NjAsImV4cCI6MTczNDM5MDAxNzM3MCwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoiY20zeW9jajZpMDAwMXp2M3ptazBseXU0biJ9.ZX2hFpQe2qqGMREpn6R83GaAntGhLJrg3qmvd2P0HnI
-@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2NTY0NjAsImV4cCI6MTczNDM5MDAxNzM3MCwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoiY20zeW9jajZpMDAwMXp2M3ptazBseXU0biJ9.ZX2hFpQe2qqGMREpn6R83GaAntGhLJrg3qmvd2P0HnI
+@refresh_token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2NTg0ODIsImV4cCI6MTczNDk5NTk0MDkyMCwiaXNzIjoicmVmcmVzaC10b2tlbiIsInN1YiI6ImNtM3lvY2o2aTAwMDF6djN6bWswbHl1NG4ifQ.4Z4ce43WWPvYjSWGZIQyCjhniefZBuPwrc7UcXp2nLQ
 
 ### Register
 POST {{baseUrl}}/auth/register
@@ -26,7 +26,7 @@ X-Fingerprint: 1234567890
 
 ### Refresh
 POST {{baseUrl}}/auth/refresh
-Content-Type: application/json
+X-Refresh-Token: {{refresh_token}}
 X-Fingerprint: 1234567890
 
 ### Logout

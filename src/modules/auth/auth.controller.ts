@@ -6,6 +6,7 @@ import {
   HttpCode,
   HttpStatus,
   Post,
+  UseGuards,
 } from '@nestjs/common';
 import { AuthService } from '@/modules/auth/auth.service';
 import { SessionPresenter } from '@/modules/session/presenters/session.presenter';
@@ -22,6 +23,7 @@ import { MessagePresenter } from '@/common/presenters/message.presenter';
 import { ForgotPasswordDto } from '@/modules/auth/dtos/forgot-password.dto';
 import { ResetPasswordDto } from '@/modules/auth/dtos/reset-password.dto';
 import { Fingerprint } from '@/common/decorators/fingerprint.decorator';
+import { RefreshAuthGuard } from '@/modules/auth/guards/refresh-auth.guard';
 
 @Controller('auth')
 export class AuthController {
@@ -51,12 +53,13 @@ export class AuthController {
   @Post('refresh')
   @IsPublic()
   @HttpCode(HttpStatus.OK)
+  @UseGuards(RefreshAuthGuard)
   @ApiDocs({ isPublic: true, response: [401, 500] })
-  refresh(): Promise<SessionPresenter> {
-    return Promise.resolve({
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-    });
+  refresh(
+    @CurrentUser('id') userId: string,
+    @Headers() headers: AuthenticateDto,
+  ): Promise<SessionPresenter> {
+    return this.authService.refresh(userId, headers);
   }
 
   @Post('logout')

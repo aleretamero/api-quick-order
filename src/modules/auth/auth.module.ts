@@ -8,12 +8,14 @@ import { HashModule } from '@/infra/hash/hash.module';
 import { I18nModule } from '@/infra/i18n/i18n-module';
 import { EncryptModule } from '@/infra/encrypt/encrypt.module';
 import { EnvModule } from '@/infra/env/env.module';
+import { JwtModule } from '@/infra/jwt/jwt.module';
 
 @Module({
   imports: [
     PrismaModule,
     EnvModule,
     I18nModule,
+    JwtModule,
     HashModule,
     EncryptModule,
     DeviceModule,
