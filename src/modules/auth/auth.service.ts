@@ -12,6 +12,7 @@ import { LoginDto } from '@/modules/auth/dtos/login.dto';
 import { HashService } from '@/infra/hash/hash.service';
 import { I18nService } from '@/infra/i18n/i18n-service';
 import { UserPresenter } from '@/modules/user/presenters/user.presenter';
+import { RegisterDto } from '@/modules/auth/dtos/register.dto';
 
 @Injectable()
 export class AuthService {
@@ -32,6 +33,15 @@ export class AuthService {
       headers['x-fingerprint'],
     );
     return this.sessionService.create(device.id);
+  }
+
+  async register(dto: RegisterDto): Promise<SessionPresenter> {
+    console.log(dto);
+
+    return {
+      accessToken: 'accessToken',
+      refreshToken: 'refreshToken',
+    };
   }
 
   async login(

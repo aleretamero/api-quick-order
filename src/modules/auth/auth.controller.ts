@@ -15,6 +15,7 @@ import { IsPublic } from '@/common/decorators/is-public.decorator';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { UserPresenter } from '@/modules/user/presenters/user.presenter';
 import { ApiDocs } from '@/common/decorators/api-docs.decorators';
+import { RegisterDto } from '@/modules/auth/dtos/register.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -23,11 +24,8 @@ export class AuthController {
   @Post('register')
   @IsPublic()
   @ApiDocs({ isPublic: true, response: [500] })
-  register(): Promise<SessionPresenter> {
-    return Promise.resolve({
-      accessToken: 'accessToken',
-      refreshToken: 'refreshToken',
-    });
+  register(@Body() body: RegisterDto): Promise<SessionPresenter> {
+    return this.authService.register(body);
   }
 
   @Post('login')
