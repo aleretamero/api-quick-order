@@ -1,10 +1,4 @@
-import {
-  IsEmail,
-  IsEnum,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsEmail, IsEnum, IsNotEmpty, IsString } from 'class-validator';
 import { Role } from '@/modules/user/enums/role.enum';
 
 export class RegisterDto {
@@ -16,7 +10,7 @@ export class RegisterDto {
   @IsString()
   password!: string;
 
-  @IsOptional()
+  @IsNotEmpty()
   @IsEnum(Role)
   role!: Role;
 }
