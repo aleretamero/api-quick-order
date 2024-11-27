@@ -4,7 +4,14 @@
 ### Create order
 POST {{baseUrl}}/orders
 Authorization: Bearer {{token}}
-Content-Type: multipart/form-data
+Content-Type: application/json
+
+{
+  "image": "https://www.google.com",
+  "description": "Order description",
+  "salePrice": 100.00,
+  "receivedPrice": 100.00
+}
 
 ### Get all orders
 GET {{baseUrl}}/orders
