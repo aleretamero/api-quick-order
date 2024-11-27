@@ -3,6 +3,7 @@ import { PrismaService } from '@/infra/prisma/prisma.service';
 import { OrderStatus } from '@/modules/order/enums/order-status.enum';
 import { CreateOrderDto } from '@/modules/order/dtos/create-order.dto';
 import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
+import { Role } from '@/modules/user/enums/role.enum';
 
 @Injectable()
 export class OrderService {
@@ -25,7 +26,11 @@ export class OrderService {
     });
   }
 
-  async findAll() {
-    return this.prismaService.order.findMany();
+  async findAll(role: Role): Promise<OrderPresenter[]> {
+    const orders = await this.prismaService.order.findMany();
+
+    return orders.map(
+      (order) => new OrderPresenter({ ...order, isAdmin: role === Role.ADMIN }),
+    );
   }
 }

@@ -5,6 +5,7 @@ import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/modules/user/enums/role.enum';
 import { ApiDocs } from '@/common/decorators/api-docs.decorators';
+import { CurrentUser } from '@/common/decorators/current-user.decorator';
 
 @Controller('orders')
 export class OrderController {
@@ -18,7 +19,8 @@ export class OrderController {
   }
 
   @Get()
-  index() {
-    return this.orderService.findAll();
+  @ApiDocs({ response: [401, 500] })
+  index(@CurrentUser('role') role: Role): Promise<OrderPresenter[]> {
+    return this.orderService.findAll(role);
   }
 }
