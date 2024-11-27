@@ -71,8 +71,8 @@ Table order_logs {
   orderId String [not null]
   sessionId String [not null]
   session sessions [not null]
-  beforeState String [not null]
-  afterState String [not null]
+  beforeState Json
+  afterState Json
   createdAt DateTime [default: `now()`, not null]
   updatedAt DateTime [default: `now()`, not null]
   order orders [not null]

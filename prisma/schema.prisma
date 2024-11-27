@@ -94,8 +94,8 @@ model OrderLog {
   orderId     String   @map("order_id") @db.VarChar(50)
   sessionId   String   @map("session_id") @db.VarChar(50)
   session     Session  @relation(fields: [sessionId], references: [id])
-  beforeState String   @map("before_state")
-  afterState  String   @map("after_state")
+  beforeState Json?    @map("before_state")
+  afterState  Json?    @map("after_state")
   createdAt   DateTime @default(now()) @map("created_at")
   updatedAt   DateTime @default(now()) @updatedAt @map("updated_at")
 
