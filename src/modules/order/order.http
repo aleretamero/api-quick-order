@@ -1,0 +1,8 @@
+@baseUrl = http://localhost:3333
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI2NTY0NjAsImV4cCI6MTczNDM5MDAxNzM3MCwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoiY20zeW9jajZpMDAwMXp2M3ptazBseXU0biJ9.ZX2hFpQe2qqGMREpn6R83GaAntGhLJrg3qmvd2P0HnI
+
+### Get all orders
+GET {{baseUrl}}/orders
+Authorization: Bearer {{token}}
+X-Fingerprint: 1234567890
+
