@@ -9,11 +9,13 @@ import { I18nModule } from '@/infra/i18n/i18n-module';
 import { EncryptModule } from '@/infra/encrypt/encrypt.module';
 import { EnvModule } from '@/infra/env/env.module';
 import { JwtModule } from '@/infra/jwt/jwt.module';
+import { MailModule } from '@/infra/mail/mail.module';
 
 @Module({
   imports: [
     PrismaModule,
     EnvModule,
+    MailModule,
     I18nModule,
     JwtModule,
     HashModule,

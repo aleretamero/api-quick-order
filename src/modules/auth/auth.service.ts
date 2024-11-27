@@ -24,6 +24,7 @@ import { ClockUtils } from '@/common/helpers/clock-utils.helper';
 import { EncryptService } from '@/infra/encrypt/encrypt.service';
 import { EnvService } from '@/infra/env/env.service';
 import { CodeUtils } from '@/common/helpers/code-utils.helper';
+import { MailService } from '@/infra/mail/mail.service';
 
 @Injectable()
 export class AuthService {
@@ -33,6 +34,7 @@ export class AuthService {
     private readonly encryptService: EncryptService,
     private readonly envService: EnvService,
     private readonly i18nService: I18nService,
+    private readonly mailService: MailService,
     private readonly deviceService: DeviceService,
     private readonly sessionService: SessionService,
   ) {}
@@ -165,8 +167,15 @@ export class AuthService {
       }),
     ]);
 
-    // TODO: Send email with reset password link
-    console.log('Reset password code:', code);
+    await this.mailService.sendMail({
+      template: 'forgot-password',
+      to: user.email,
+      subject: this.i18nService.t('mail.forgot_password.subject'),
+      context: {
+        title: this.i18nService.t('mail.forgot_password.title'),
+        code,
+      },
+    });
 
     return new MessagePresenter(
       this.i18nService.t('auth.email_sent_to_reset_password'),
