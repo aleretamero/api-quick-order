@@ -1,8 +1,11 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@/infra/prisma/prisma.service';
 
 @Injectable()
 export class OrderService {
-  findAll() {
-    throw new Error('Method not implemented.');
+  constructor(private readonly prismaService: PrismaService) {}
+
+  async findAll() {
+    return this.prismaService.order.findMany();
   }
 }
