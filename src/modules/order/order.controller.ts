@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post } from '@nestjs/common';
+import { Body, Controller, Get, Post, Query } from '@nestjs/common';
 import { OrderService } from '@/modules/order/order.service';
 import { CreateOrderDto } from '@/modules/order/dtos/create-order.dto';
 import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
@@ -6,6 +6,8 @@ import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/modules/user/enums/role.enum';
 import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
+import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
+import { PaginationQuery } from '@/common/queries/pagination.query';
 
 @Controller('orders')
 export class OrderController {
@@ -20,7 +22,10 @@ export class OrderController {
 
   @Get()
   @ApiDocs({ response: [401, 500] })
-  index(@CurrentUser('role') role: Role): Promise<OrderPresenter[]> {
-    return this.orderService.findAll(role);
+  index(
+    @CurrentUser('role') role: Role,
+    @Query() query: PaginationQuery,
+  ): Promise<PaginationPresenter<OrderPresenter>> {
+    return this.orderService.findAll(role, query);
   }
 }

@@ -4,6 +4,8 @@ import { OrderStatus } from '@/modules/order/enums/order-status.enum';
 import { CreateOrderDto } from '@/modules/order/dtos/create-order.dto';
 import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
 import { Role } from '@/modules/user/enums/role.enum';
+import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
+import { PaginationQuery } from '@/common/queries/pagination.query';
 
 @Injectable()
 export class OrderService {
@@ -26,11 +28,31 @@ export class OrderService {
     });
   }
 
-  async findAll(role: Role): Promise<OrderPresenter[]> {
-    const orders = await this.prismaService.order.findMany();
+  async findAll(
+    role: Role,
+    query: PaginationQuery,
+  ): Promise<PaginationPresenter<OrderPresenter>> {
+    const limit = query.limit ?? 10;
+    const page = query.page ?? 1;
 
-    return orders.map(
-      (order) => new OrderPresenter({ ...order, isAdmin: role === Role.ADMIN }),
-    );
+    const [orders, total] = await this.prismaService.$transaction([
+      this.prismaService.order.findMany({
+        skip: (page - 1) * limit,
+        take: limit,
+      }),
+      this.prismaService.order.count(),
+    ]);
+
+    return new PaginationPresenter({
+      data: orders.map(
+        (order) =>
+          new OrderPresenter({ ...order, isAdmin: role === Role.ADMIN }),
+      ),
+      meta: {
+        total,
+        currentPage: page,
+        itemsPerPage: limit,
+      },
+    });
   }
 }
