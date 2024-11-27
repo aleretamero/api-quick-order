@@ -65,4 +65,25 @@ export class EnvService {
   get ENCRYPT_TOKEN_SECRET(): string {
     return this.configService.getOrThrow<string>('ENCRYPT_TOKEN_SECRET');
   }
+
+  // MAIL
+  get MAIL_HOST(): string {
+    return this.configService.getOrThrow<string>('MAIL_HOST');
+  }
+
+  get MAIL_PORT(): number {
+    return this.configService.getOrThrow<number>('MAIL_PORT');
+  }
+
+  get MAIL_USER(): string {
+    return this.configService.getOrThrow<string>('MAIL_USER');
+  }
+
+  get MAIL_PASS(): string {
+    return this.configService.getOrThrow<string>('MAIL_PASS');
+  }
+
+  get MAIL_DEFAULT_FROM_EMAIL(): string {
+    return this.configService.getOrThrow<string>('MAIL_DEFAULT_FROM_EMAIL');
+  }
 }
