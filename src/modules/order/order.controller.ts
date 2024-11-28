@@ -8,6 +8,7 @@ import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
 import { PaginationQuery } from '@/common/queries/pagination.query';
+import { CurrentSession } from '@/common/decorators/current-session.decorator';
 
 @Controller('orders')
 export class OrderController {
@@ -16,8 +17,11 @@ export class OrderController {
   @Post()
   @Roles(Role.ADMIN)
   @ApiDocs({ response: [400, 401, 403, 500] })
-  create(@Body() body: CreateOrderDto): Promise<OrderPresenter> {
-    return this.orderService.create(body);
+  create(
+    @CurrentSession('id') sessionId: string,
+    @Body() body: CreateOrderDto,
+  ): Promise<OrderPresenter> {
+    return this.orderService.create(sessionId, body);
   }
 
   @Get()

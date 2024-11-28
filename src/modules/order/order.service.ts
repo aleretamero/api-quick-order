@@ -11,15 +11,30 @@ import { PaginationQuery } from '@/common/queries/pagination.query';
 export class OrderService {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create(dto: CreateOrderDto): Promise<OrderPresenter> {
-    const order = await this.prismaService.order.create({
-      data: {
-        status: OrderStatus.PENDING,
-        description: dto.description,
-        salePrice: dto.salePrice,
-        receivedPrice: dto.receivedPrice,
-        image: dto.image,
-      },
+  async create(
+    sessionId: string,
+    dto: CreateOrderDto,
+  ): Promise<OrderPresenter> {
+    const order = await this.prismaService.$transaction(async (ctx) => {
+      const order = await ctx.order.create({
+        data: {
+          status: OrderStatus.PENDING,
+          description: dto.description,
+          salePrice: dto.salePrice,
+          receivedPrice: dto.receivedPrice,
+          image: dto.image,
+        },
+      });
+
+      await ctx.orderLog.create({
+        data: {
+          sessionId: sessionId,
+          orderId: order.id,
+          afterState: order,
+        },
+      });
+
+      return order;
     });
 
     return new OrderPresenter({
