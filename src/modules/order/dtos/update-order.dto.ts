@@ -7,19 +7,17 @@ export class UpdateOrderDto {
   @IsString()
   description?: string;
 
+  @Transform(({ value }) => Number(value))
   @IsOptional()
   @IsNumber()
   @Min(0)
   salePrice?: number;
 
+  @Transform(({ value }) => Number(value))
   @IsOptional()
   @IsNumber()
   @Min(0)
   receivedPrice?: number;
-
-  @IsOptional()
-  @IsString()
-  image?: string;
 
   @Transform(({ value }) => value?.toUpperCase?.())
   @IsOptional()
