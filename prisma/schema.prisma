@@ -78,7 +78,8 @@ model UserToken {
 model Order {
   id            String     @id @default(cuid())
   status        String
-  image         String     @map("image")
+  image         String?    @map("image")
+  imageUrl      String?    @map("image_url")
   description   String
   salePrice     Decimal    @map("sale_price") @db.Decimal(10, 2)
   receivedPrice Decimal    @map("received_price") @db.Decimal(10, 2)
