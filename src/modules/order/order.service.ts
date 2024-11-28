@@ -10,14 +10,14 @@ import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
 import { PaginationQuery } from '@/common/queries/pagination.query';
 import { Prisma } from '@prisma/client';
 import { FileType } from '@/common/types/file.type';
-import { StorageLocalService } from '@/infra/storage-local/storage-local.service';
+import { StorageFirebaseService } from '@/infra/storage-firebase/storage-firebase.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly i18nService: I18nService,
-    private readonly storageLocalService: StorageLocalService,
+    private readonly storageFirebaseService: StorageFirebaseService,
   ) {}
 
   async create(
@@ -25,15 +25,7 @@ export class OrderService {
     dto: CreateOrderDto,
     file?: FileType,
   ): Promise<OrderPresenter> {
-    console.log(file);
-
-    let image: string;
-    let imageUrl: string;
-
-    if (file) {
-      image = file.filename;
-      imageUrl = this.storageLocalService.getUrl(image);
-    }
+    const { image, imageUrl } = await this.uploadFile(file);
 
     const order = await this.prismaService.$transaction(async (ctx) => {
       const order = await ctx.order.create({
@@ -144,7 +136,6 @@ export class OrderService {
     dto: UpdateOrderDto,
     file?: FileType,
   ): Promise<OrderPresenter> {
-    console.log(file);
     const currentOrder = await this.prismaService.order.findUnique({
       where: {
         id: orderId,
@@ -157,13 +148,7 @@ export class OrderService {
       );
     }
 
-    let image: string;
-    let imageUrl: string;
-
-    if (file) {
-      image = file.filename;
-      imageUrl = this.storageLocalService.getUrl(image);
-    }
+    const { image, imageUrl } = await this.uploadFile(file);
 
     const order = await this.prismaService.$transaction(async (ctx) => {
       const updatedOrder = await ctx.order.update({
@@ -234,5 +219,24 @@ export class OrderService {
         },
       });
     });
+  }
+
+  private async uploadFile(file?: FileType): Promise<{
+    image?: string;
+    imageUrl?: string;
+  }> {
+    let image: string | undefined;
+    let imageUrl: string | undefined;
+
+    if (file) {
+      const { path, url } = await this.storageFirebaseService.uploadFile(
+        'orders',
+        file,
+      );
+      image = path;
+      imageUrl = url;
+    }
+
+    return { image, imageUrl };
   }
 }

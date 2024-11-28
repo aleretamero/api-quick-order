@@ -3,10 +3,10 @@ import { OrderController } from '@/modules/order/order.controller';
 import { OrderService } from '@/modules/order/order.service';
 import { PrismaModule } from '@/infra/prisma/prisma.module';
 import { I18nModule } from '@/infra/i18n/i18n-module';
-import { StorageLocalModule } from '@/infra/storage-local/storage-local.module';
+import { StorageFirebaseModule } from '@/infra/storage-firebase/storage-firebase.module';
 
 @Module({
-  imports: [PrismaModule, I18nModule, StorageLocalModule],
+  imports: [PrismaModule, I18nModule, StorageFirebaseModule],
   controllers: [OrderController],
   providers: [OrderService],
 })
