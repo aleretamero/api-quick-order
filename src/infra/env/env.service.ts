@@ -7,6 +7,10 @@ export class EnvService {
   constructor(private readonly configService: ConfigService) {}
 
   // GENERAL
+  get BASE_URL(): string {
+    return this.configService.getOrThrow<string>('BASE_URL');
+  }
+
   get PORT(): number {
     return this.configService.getOrThrow<number>('PORT');
   }
