@@ -10,12 +10,14 @@ import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
 import { PaginationQuery } from '@/common/queries/pagination.query';
 import { Prisma } from '@prisma/client';
 import { FileType } from '@/common/types/file.type';
+import { StorageLocalService } from '@/infra/storage-local/storage-local.service';
 
 @Injectable()
 export class OrderService {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly i18nService: I18nService,
+    private readonly storageLocalService: StorageLocalService,
   ) {}
 
   async create(
@@ -25,6 +27,14 @@ export class OrderService {
   ): Promise<OrderPresenter> {
     console.log(file);
 
+    let image: string;
+    let imageUrl: string;
+
+    if (file) {
+      image = file.filename;
+      imageUrl = this.storageLocalService.getUrl(image);
+    }
+
     const order = await this.prismaService.$transaction(async (ctx) => {
       const order = await ctx.order.create({
         data: {
@@ -32,7 +42,8 @@ export class OrderService {
           description: dto.description,
           salePrice: dto.salePrice,
           receivedPrice: dto.receivedPrice,
-          // image: dto.image,
+          image,
+          imageUrl,
         },
       });
 
