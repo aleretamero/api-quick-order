@@ -7,4 +7,8 @@ export default {
   email_already_exists: 'Email já cadastrado',
   forbidden_for_role: 'Acesso negado para o cargo $t(user.roles.{role})',
   logged_out: 'Deslogado com sucesso',
+  session: {
+    not_found: 'Sessão não encontrada',
+    expired: 'Sessão expirada',
+  },
 } satisfies AuthI18n;

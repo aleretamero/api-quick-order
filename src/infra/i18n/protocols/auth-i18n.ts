@@ -5,4 +5,8 @@ export interface AuthI18n {
   email_already_exists: string;
   forbidden_for_role: string;
   logged_out: string;
+  session: {
+    not_found: string;
+    expired: string;
+  };
 }
