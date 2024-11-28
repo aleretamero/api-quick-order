@@ -6,7 +6,8 @@ import { ClockUtils, OffsetString } from '@/common/helpers/clock-utils.helper';
 export class EnvService {
   constructor(private readonly configService: ConfigService) {}
 
-  // GENERAL
+  // #region GENERAL
+
   get BASE_URL(): string {
     return this.configService.getOrThrow<string>('BASE_URL');
   }
@@ -27,12 +28,18 @@ export class EnvService {
     return this.configService.getOrThrow<number>('API_VERSION');
   }
 
-  // DOCUMENTATION
+  // #endregion
+
+  // #region DOCUMENTATION
+
   get DOCS_PATH(): string {
     return this.configService.getOrThrow<string>('DOCS_PATH');
   }
 
-  // JWT
+  // #endregion
+
+  // #region JWT
+
   get JWT_ACCESS_TOKEN_SECRET(): string {
     return this.configService.getOrThrow<string>('JWT_ACCESS_TOKEN_SECRET');
   }
@@ -65,12 +72,18 @@ export class EnvService {
     return env;
   }
 
-  // ENCRYPT
+  // #endregion
+
+  // #region ENCRYPT
+
   get ENCRYPT_TOKEN_SECRET(): string {
     return this.configService.getOrThrow<string>('ENCRYPT_TOKEN_SECRET');
   }
 
-  // MAIL
+  // #endregion
+
+  // #region MAIL
+
   get MAIL_HOST(): string {
     return this.configService.getOrThrow<string>('MAIL_HOST');
   }
@@ -90,4 +103,34 @@ export class EnvService {
   get MAIL_DEFAULT_FROM_EMAIL(): string {
     return this.configService.getOrThrow<string>('MAIL_DEFAULT_FROM_EMAIL');
   }
+
+  // #endregion
+
+  // #region FIREBASE
+
+  get FIREBASE_API_KEY(): string {
+    return this.configService.getOrThrow<string>('FIREBASE_API_KEY');
+  }
+
+  get FIREBASE_AUTH_DOMAIN(): string {
+    return this.configService.getOrThrow<string>('FIREBASE_AUTH_DOMAIN');
+  }
+
+  get FIREBASE_PROJECT_ID(): string {
+    return this.configService.getOrThrow<string>('FIREBASE_PROJECT_ID');
+  }
+
+  get FIREBASE_STORAGE_BUCKET(): string {
+    return this.configService.getOrThrow<string>('FIREBASE_STORAGE_BUCKET');
+  }
+
+  get FIREBASE_MESSAGING_SENDER_ID(): string {
+    return this.configService.getOrThrow<string>('FIREBASE_MESSAGING_SENDER_ID'); // prettier-ignore
+  }
+
+  get FIREBASE_APP_ID(): string {
+    return this.configService.getOrThrow<string>('FIREBASE_APP_ID');
+  }
+
+  // #endregion
 }
