@@ -4,7 +4,7 @@ import { JwtAuthGuard } from '@/modules/auth/guards/jwt-auth.guard';
 import { AuthModule } from '@/modules/auth/auth.module';
 import { PrismaModule } from '@/infra/prisma/prisma.module';
 import { JwtModule } from '@/infra/jwt/jwt.module';
-import { SessionGuard } from '@/modules/auth/guards/session.guard';
+import { SessionGuard } from '@/modules/session/guards/session.guard';
 import { RolesGuard } from '@/modules/auth/guards/roles.guard';
 import { EnvModule } from '@/infra/env/env.module';
 import { I18nModule } from '@/infra/i18n/i18n-module';
