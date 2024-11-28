@@ -50,7 +50,7 @@ export class StorageLocalService {
     fs.unlinkSync(filePath);
   }
 
-  getMimeType(extension: string): string {
+  private getMimeType(extension: string): string {
     switch (extension.replace('.', '')) {
       case 'png':
         return 'image/png';
