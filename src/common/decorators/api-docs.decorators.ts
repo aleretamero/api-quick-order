@@ -68,7 +68,7 @@ export function ApiDocs(options?: ApiDocsOptions) {
   if (options?.isPublic === undefined || !options?.isPublic) {
     decorators.push(
       ApiBearerAuth(),
-      ApiHeader({ name: 'x-fingerprint', required: true }),
+      ApiHeader({ name: 'x-fingerprint', required: false }),
     );
   }
 
