@@ -20,6 +20,7 @@ import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
 import { PaginationQuery } from '@/common/queries/pagination.query';
 import { CurrentSession } from '@/common/decorators/current-session.decorator';
+import { UpdateOrderDto } from '@/modules/order/dtos/update-order.dto';
 
 @Controller('orders')
 export class OrderController {
@@ -44,12 +45,21 @@ export class OrderController {
     return this.orderService.findAll(role, query);
   }
 
+  @Get(':id')
+  @ApiDocs({ response: [400, 401, 404, 500] })
+  show(
+    @CurrentUser('role') role: Role,
+    @Param('id') orderId: string,
+  ): Promise<OrderPresenter> {
+    return this.orderService.findOne(role, orderId);
+  }
+
   @Patch(':id')
   @ApiDocs({ response: [400, 401, 500] })
   update(
     @Param('id') orderId: string,
     @CurrentSession('id') sessionId: string,
-    @Body() body: CreateOrderDto,
+    @Body() body: UpdateOrderDto,
   ): Promise<OrderPresenter> {
     return this.orderService.update(sessionId, orderId, body);
   }

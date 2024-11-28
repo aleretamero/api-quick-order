@@ -84,6 +84,45 @@ export class OrderService {
     });
   }
 
+  async findOne(role: Role, id: string): Promise<OrderPresenter> {
+    const order = await this.prismaService.order.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        orderLogs: {
+          include: {
+            session: {
+              select: {
+                device: {
+                  select: {
+                    user: {
+                      select: {
+                        id: true,
+                        email: true,
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException(
+        this.i18nService.t('order.not_found_with_id', { id }),
+      );
+    }
+
+    return new OrderPresenter({
+      ...order,
+      isAdmin: role === Role.ADMIN,
+    });
+  }
+
   async update(
     sessionId: string,
     orderId: string,
