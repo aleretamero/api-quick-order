@@ -26,8 +26,8 @@ export class OrderPresenter {
     this.imageUrl = props.imageUrl ?? undefined;
 
     if (props.isAdmin) {
-      this.salePrice = props.salePrice.toNumber(); // TODO: add CurrencyUtils
-      this.receivedPrice = props.receivedPrice.toNumber(); // TODO: add CurrencyUtils
+      this.salePrice = props.salePrice.toNumber();
+      this.receivedPrice = props.receivedPrice.toNumber();
       this.orderLogs = props.orderLogs?.map(
         (log) => new OrderLogsPresenter(log),
       );
