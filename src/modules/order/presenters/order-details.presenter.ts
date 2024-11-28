@@ -9,7 +9,8 @@ export type OrderDetailsPresenterProps = Order & {
 export class OrderDetailsPresenter {
   id: string;
   status: string;
-  image: string;
+  image?: string;
+  imageUrl?: string;
   description: string;
   salePrice: number;
   receivedPrice: number;
@@ -19,7 +20,8 @@ export class OrderDetailsPresenter {
   constructor(props: OrderDetailsPresenterProps) {
     this.id = props.id;
     this.status = props.status as OrderStatus;
-    this.image = props.image;
+    this.image = props.image ?? undefined;
+    this.imageUrl = props.imageUrl ?? undefined;
     this.description = props.description;
     this.salePrice = props.salePrice;
     this.receivedPrice = props.receivedPrice;

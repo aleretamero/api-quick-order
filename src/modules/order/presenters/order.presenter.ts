@@ -14,7 +14,7 @@ export class OrderPresenter {
   id: string;
   status: OrderStatus;
   description: string;
-  imageUrl: string;
+  imageUrl?: string;
   salePrice?: number;
   receivedPrice?: number;
   orderLogs?: OrderLogsPresenter[];
@@ -23,7 +23,7 @@ export class OrderPresenter {
     this.id = props.id;
     this.status = props.status as OrderStatus;
     this.description = props.description;
-    this.imageUrl = props.image;
+    this.imageUrl = props.imageUrl ?? undefined;
 
     if (props.isAdmin) {
       this.salePrice = props.salePrice.toNumber(); // TODO: add CurrencyUtils
