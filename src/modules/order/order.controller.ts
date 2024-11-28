@@ -9,9 +9,13 @@ import {
   Patch,
   Post,
   Query,
+  UploadedFile,
 } from '@nestjs/common';
 import { OrderService } from '@/modules/order/order.service';
-import { CreateOrderDto } from '@/modules/order/dtos/create-order.dto';
+import {
+  CreateOrderDto,
+  CreateOrderSchema,
+} from '@/modules/order/dtos/create-order.dto';
 import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
 import { Roles } from '@/common/decorators/roles.decorator';
 import { Role } from '@/modules/user/enums/role.enum';
@@ -20,7 +24,13 @@ import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
 import { PaginationQuery } from '@/common/queries/pagination.query';
 import { CurrentSession } from '@/common/decorators/current-session.decorator';
-import { UpdateOrderDto } from '@/modules/order/dtos/update-order.dto';
+import {
+  UpdateOrderDto,
+  UpdateOrderSchema,
+} from '@/modules/order/dtos/update-order.dto';
+import { UseInterceptorFile } from '@/common/decorators/use-file-interceptor';
+import { ParseFilePipe } from '@/common/pipes/parse-file.pipe';
+import { FileType } from '@/common/types/file.type';
 
 @Controller('orders')
 export class OrderController {
@@ -28,12 +38,14 @@ export class OrderController {
 
   @Post()
   @Roles(Role.ADMIN)
-  @ApiDocs({ response: [400, 401, 403, 500] })
+  @UseInterceptorFile('image')
+  @ApiDocs({ response: [400, 401, 403, 500], body: { type: CreateOrderSchema }}) // prettier-ignore
   create(
     @CurrentSession('id') sessionId: string,
     @Body() body: CreateOrderDto,
+    @UploadedFile(ParseFilePipe) file?: FileType,
   ): Promise<OrderPresenter> {
-    return this.orderService.create(sessionId, body);
+    return this.orderService.create(sessionId, body, file);
   }
 
   @Get()
@@ -55,13 +67,15 @@ export class OrderController {
   }
 
   @Patch(':id')
-  @ApiDocs({ response: [400, 401, 500] })
+  @UseInterceptorFile('image')
+  @ApiDocs({ response: [400, 401, 500], body: { type: UpdateOrderSchema } })
   update(
     @Param('id') orderId: string,
     @CurrentSession('id') sessionId: string,
     @Body() body: UpdateOrderDto,
+    @UploadedFile(ParseFilePipe) file?: FileType,
   ): Promise<OrderPresenter> {
-    return this.orderService.update(sessionId, orderId, body);
+    return this.orderService.update(sessionId, orderId, body, file);
   }
 
   @Delete(':id')

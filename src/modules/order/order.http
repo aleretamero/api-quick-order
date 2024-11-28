@@ -1,19 +1,18 @@
 @baseUrl = http://localhost:3333
-@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI4MDI0OTUsImV4cCI6MTczNDUzNjE5NzcxMywiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoiY20zeW9jajZpMDAwMXp2M3ptazBseXU0biJ9.Iw28Cbj2I0fEj2COmVws0ve5ACp7VjVe_0RmeIg7D2I
+@token = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpYXQiOjE3MzI4MDU2NjksImV4cCI6MTczNDUzOTM3NTEwMSwiaXNzIjoiYWNjZXNzLXRva2VuIiwic3ViIjoiY20zeW9jajZpMDAwMXp2M3ptazBseXU0biJ9.LJ4_UZn19ebdyhH38bsbaEC1pX87uS-wgOKVqBBaRSw
 @fingerPrint = 1234567890
 
 ### Create order
 POST {{baseUrl}}/orders
+Content-Type: multipart/form-data
 Authorization: Bearer {{token}}
-Content-Type: application/json
 X-Fingerprint: {{fingerPrint}}
 
-{
-  "image": "https://www.google.com",
-  "description": "Order description",
-  "salePrice": 100.00,
-  "receivedPrice": 100.00
-}
+# image: file
+# description: string
+# salePrice: number
+# receivedPrice: number
+// TODO: add body params
 
 ### Get all orders
 GET {{baseUrl}}/orders
@@ -27,16 +26,15 @@ X-Fingerprint: {{fingerPrint}}
 
 ### Update order by id
 PATCH {{baseUrl}}/orders/cm41cewvf0005qh9ecgmt9vnb
-Content-Type: application/json
+Content-Type: multipart/form-data
 Authorization: Bearer {{token}}
 X-Fingerprint: {{fingerPrint}}
 
-{
-  "description": "Order description updated",
-  "salePrice": 150.00,
-  "receivedPrice": 150.00,
-  "status": "COMPLETED"
-}
+# image: file
+# description: string
+# salePrice: number
+# receivedPrice: number
+// TODO: add body params
 
 ### Delete order by id
 DELETE {{baseUrl}}/orders/cm41cewvf0005qh9ecgmt9vnb

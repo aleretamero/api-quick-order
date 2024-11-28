@@ -9,6 +9,7 @@ import { Role } from '@/modules/user/enums/role.enum';
 import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
 import { PaginationQuery } from '@/common/queries/pagination.query';
 import { Prisma } from '@prisma/client';
+import { FileType } from '@/common/types/file.type';
 
 @Injectable()
 export class OrderService {
@@ -20,7 +21,10 @@ export class OrderService {
   async create(
     sessionId: string,
     dto: CreateOrderDto,
+    file?: FileType,
   ): Promise<OrderPresenter> {
+    console.log(file);
+
     const order = await this.prismaService.$transaction(async (ctx) => {
       const order = await ctx.order.create({
         data: {
@@ -28,7 +32,7 @@ export class OrderService {
           description: dto.description,
           salePrice: dto.salePrice,
           receivedPrice: dto.receivedPrice,
-          image: dto.image,
+          // image: dto.image,
         },
       });
 
@@ -127,7 +131,9 @@ export class OrderService {
     sessionId: string,
     orderId: string,
     dto: UpdateOrderDto,
+    file?: FileType,
   ): Promise<OrderPresenter> {
+    console.log(file);
     const currentOrder = await this.prismaService.order.findUnique({
       where: {
         id: orderId,
@@ -149,7 +155,7 @@ export class OrderService {
           description: dto.description,
           salePrice: dto.salePrice,
           receivedPrice: dto.receivedPrice,
-          image: dto.image,
+          // image: dto.image,
           status: dto.status,
         },
       });
@@ -183,6 +189,10 @@ export class OrderService {
       throw new NotFoundException(
         this.i18nService.t('order.not_found_with_id', { orderId }),
       );
+    }
+
+    if (currentOrder.status === OrderStatus.DELETED) {
+      return;
     }
 
     await this.prismaService.$transaction(async (ctx) => {
