@@ -8,7 +8,7 @@ export type OrderDetailsPresenterProps = Order & {
 
 export class OrderDetailsPresenter {
   id: string;
-  status: string;
+  status: OrderStatus;
   image?: string;
   imageUrl?: string;
   description: string;
