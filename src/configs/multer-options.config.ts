@@ -7,35 +7,43 @@ import { FileType } from '@/common/types/file.type';
 
 type Options = {
   filename?: string;
+  storageType?: 'memory' | 'local';
 };
 
-export const getMulterOptions = (options: Options = {}): MulterOptions => ({
-  storage: multer.diskStorage({
-    destination: (req: Express.Request, file: FileType, callback) => {
-      const uploadsDir = path.resolve(__dirname, '../../uploads');
+export const getMulterOptions = (
+  options: Options = {
+    storageType: 'memory',
+  },
+): MulterOptions => ({
+  storage:
+    options.storageType === 'memory'
+      ? multer.memoryStorage()
+      : multer.diskStorage({
+          destination: (req: Express.Request, file: FileType, callback) => {
+            const uploadsDir = path.resolve(__dirname, '../../uploads');
 
-      if (!fs.existsSync(uploadsDir)) {
-        fs.mkdirSync(uploadsDir, { recursive: true });
-      }
-      callback(null, uploadsDir);
-    },
+            if (!fs.existsSync(uploadsDir)) {
+              fs.mkdirSync(uploadsDir, { recursive: true });
+            }
+            callback(null, uploadsDir);
+          },
 
-    filename: (
-      req: Express.Request,
-      file: FileType,
-      callback: (error: Error | null, filename: string) => void,
-    ) => {
-      const extention = file.originalname?.split('.').pop();
+          filename: (
+            req: Express.Request,
+            file: FileType,
+            callback: (error: Error | null, filename: string) => void,
+          ) => {
+            const extention = file.originalname?.split('.').pop();
 
-      if (options.filename) {
-        return callback(null, `${options.filename}.${extention}`);
-      }
+            if (options.filename) {
+              return callback(null, `${options.filename}.${extention}`);
+            }
 
-      const timestamp = Date.now();
-      const codeString = crypto.randomBytes(16).toString('hex');
-      const fileName = `${timestamp}_${codeString}.${extention}`;
+            const timestamp = Date.now();
+            const codeString = crypto.randomBytes(16).toString('hex');
+            const fileName = `${timestamp}_${codeString}.${extention}`;
 
-      callback(null, fileName);
-    },
-  }),
+            callback(null, fileName);
+          },
+        }),
 });
