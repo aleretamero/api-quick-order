@@ -14,6 +14,30 @@ export class DeviceService {
     private readonly sessionService: SessionService,
   ) {}
 
+  async findOne(
+    userId: string,
+    fingerprint: string = this.DEFAULT_FINGERPRINT,
+  ): Promise<DevicePresenter> {
+    const device = await this.prismaService.device.findUnique({
+      where: {
+        fingerprint_userId: {
+          fingerprint,
+          userId,
+        },
+      },
+    });
+
+    if (!device) {
+      throw new NotFoundException(
+        this.i18nService.t('device.not_found_with_fingerprint', {
+          fingerprint,
+        }),
+      );
+    }
+
+    return new DevicePresenter(device);
+  }
+
   async upsert(
     userId: string,
     fingerprint: string = this.DEFAULT_FINGERPRINT,
