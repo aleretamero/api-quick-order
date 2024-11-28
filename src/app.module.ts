@@ -9,6 +9,7 @@ import { RolesGuard } from '@/modules/auth/guards/roles.guard';
 import { EnvModule } from '@/infra/env/env.module';
 import { I18nModule } from '@/infra/i18n/i18n-module';
 import { OrderModule } from '@/modules/order/order.module';
+import { DeviceModule } from '@/modules/device/device.module';
 
 @Module({
   imports: [
@@ -17,6 +18,7 @@ import { OrderModule } from '@/modules/order/order.module';
     JwtModule,
     EnvModule,
     AuthModule,
+    DeviceModule,
     OrderModule,
   ],
   providers: [
