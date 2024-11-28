@@ -157,6 +157,14 @@ export class OrderService {
       );
     }
 
+    let image: string;
+    let imageUrl: string;
+
+    if (file) {
+      image = file.filename;
+      imageUrl = this.storageLocalService.getUrl(image);
+    }
+
     const order = await this.prismaService.$transaction(async (ctx) => {
       const updatedOrder = await ctx.order.update({
         where: {
@@ -166,8 +174,9 @@ export class OrderService {
           description: dto.description,
           salePrice: dto.salePrice,
           receivedPrice: dto.receivedPrice,
-          // image: dto.image,
           status: dto.status,
+          image,
+          imageUrl,
         },
       });
 
