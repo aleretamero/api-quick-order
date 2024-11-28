@@ -70,8 +70,9 @@ export class StorageFirebaseService {
   }
 
   private extractBucket(uploadable: Uploadable): string {
+    const appName = this.envService.APP_NAME;
     const uploadableName = uploadable;
 
-    return uploadableName.toUpperCase();
+    return `${appName}/${uploadableName}`.toUpperCase();
   }
 }
