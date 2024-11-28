@@ -1,7 +1,10 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -49,5 +52,16 @@ export class OrderController {
     @Body() body: CreateOrderDto,
   ): Promise<OrderPresenter> {
     return this.orderService.update(sessionId, orderId, body);
+  }
+
+  @Delete(':id')
+  @Roles(Role.ADMIN)
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiDocs({ response: [400, 401, 403, 500] })
+  delete(
+    @Param('id') orderId: string,
+    @CurrentSession('id') sessionId: string,
+  ): Promise<void> {
+    return this.orderService.delete(sessionId, orderId);
   }
 }

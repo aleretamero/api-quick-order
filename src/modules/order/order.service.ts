@@ -132,4 +132,38 @@ export class OrderService {
       isAdmin: true,
     });
   }
+
+  async delete(sessionId: string, orderId: string): Promise<void> {
+    const currentOrder = await this.prismaService.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!currentOrder) {
+      throw new NotFoundException(
+        this.i18nService.t('order.not_found_with_id', { orderId }),
+      );
+    }
+
+    await this.prismaService.$transaction(async (ctx) => {
+      const updatedOrder = await ctx.order.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          status: OrderStatus.DELETED,
+        },
+      });
+
+      await ctx.orderLog.create({
+        data: {
+          sessionId: sessionId,
+          orderId: orderId,
+          beforeState: currentOrder,
+          afterState: updatedOrder,
+        },
+      });
+    });
+  }
 }
