@@ -6,6 +6,7 @@ import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
 import { Role } from '@/modules/user/enums/role.enum';
 import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
 import { PaginationQuery } from '@/common/queries/pagination.query';
+import { Prisma } from '@prisma/client';
 
 @Injectable()
 export class OrderService {
@@ -50,12 +51,19 @@ export class OrderService {
     const limit = query.limit ?? 10;
     const page = query.page ?? 1;
 
+    const where: Prisma.OrderWhereInput = {
+      status: {
+        not: OrderStatus.DELETED,
+      },
+    };
+
     const [orders, total] = await this.prismaService.$transaction([
       this.prismaService.order.findMany({
+        where,
         skip: (page - 1) * limit,
         take: limit,
       }),
-      this.prismaService.order.count(),
+      this.prismaService.order.count({ where }),
     ]);
 
     return new PaginationPresenter({
