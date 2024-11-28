@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -62,7 +63,7 @@ export class AuthService {
       })) > 0;
 
     if (emailAlreadyExists) {
-      throw new UnauthorizedException(
+      throw new ConflictException(
         this.i18nService.t('auth.email_already_exists'),
       );
     }
