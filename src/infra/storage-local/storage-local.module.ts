@@ -1,4 +1,8 @@
+import { StorageLocalService } from '@/infra/storage-local/storage-local.service';
 import { Module } from '@nestjs/common';
 
-@Module({})
+@Module({
+  providers: [StorageLocalService],
+  exports: [StorageLocalService],
+})
 export class StorageLocalModule {}
