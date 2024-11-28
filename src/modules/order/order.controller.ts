@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Query,
+} from '@nestjs/common';
 import { OrderService } from '@/modules/order/order.service';
 import { CreateOrderDto } from '@/modules/order/dtos/create-order.dto';
 import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
@@ -31,5 +39,15 @@ export class OrderController {
     @Query() query: PaginationQuery,
   ): Promise<PaginationPresenter<OrderPresenter>> {
     return this.orderService.findAll(role, query);
+  }
+
+  @Patch(':id')
+  @ApiDocs({ response: [400, 401, 500] })
+  update(
+    @Param('id') orderId: string,
+    @CurrentSession('id') sessionId: string,
+    @Body() body: CreateOrderDto,
+  ): Promise<OrderPresenter> {
+    return this.orderService.update(sessionId, orderId, body);
   }
 }
