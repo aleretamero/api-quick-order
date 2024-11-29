@@ -19,7 +19,7 @@ export class ParseFilePipe implements PipeTransform {
   private readonly ONE_MEGABYTE = 1024 * 1024;
   private readonly ONE_GIGABYTE = 1024 * 1024 * 1024;
 
-  private readonly DEFAULT_FILE_TYPE = /jpg|jpeg|png|webp/;
+  private readonly DEFAULT_FILE_TYPE = /jpg|jpeg|png|webp|svg/;
   private readonly DEFAULT_MAX_SIZE = this.ONE_MEGABYTE * 5;
   private readonly DEFAULT_STATUS_CODE = HttpStatus.BAD_REQUEST;
   private readonly DEFAULT_REQUIRED = false;
