@@ -1,4 +1,5 @@
 import { randomBytes } from 'node:crypto';
+import sharp from 'sharp';
 import { FileType } from '@/common/types/file.type';
 import { EnvService } from '@/infra/env/env.service';
 import { Injectable } from '@nestjs/common';
@@ -36,19 +37,21 @@ export class StorageFirebaseService {
 
   async uploadFile(uploadable: Uploadable, file: FileType): Promise<Output> {
     const bucketName = this.extractBucket(uploadable);
+    const fileName = this.getFileName();
+    let mimetype = file.mimetype;
 
-    const timestamp = new Date().getTime();
-    const hash = randomBytes(16).toString('hex');
+    if (this.conversableToWebP(file.originalname.split('.').pop())) {
+      file.buffer = await this.convertImageToWebP(file.buffer);
+      mimetype = 'image/webp';
+    }
 
-    const path = `${timestamp}_${hash}`;
-
-    const storageRef = ref(this.client, `${bucketName}/${path}`);
+    const storageRef = ref(this.client, `${bucketName}/${fileName}`);
     const snapshot = await uploadBytes(storageRef, file.buffer, {
-      contentType: file.mimetype,
+      contentType: mimetype,
     });
     const url = await getDownloadURL(snapshot.ref);
 
-    return { path, url };
+    return { path: fileName, url };
   }
 
   async uploadFiles(
@@ -74,5 +77,42 @@ export class StorageFirebaseService {
     const uploadableName = uploadable;
 
     return `${appName}/${uploadableName}`.toUpperCase();
+  }
+
+  private getFileName(): string {
+    const timestamp = new Date().getTime();
+    const hash = randomBytes(16).toString('hex');
+
+    return `${timestamp}_${hash}`;
+  }
+
+  private conversableToWebP(extension?: string): boolean {
+    switch (extension?.replace('.', '')) {
+      case 'png':
+      case 'jpg':
+      case 'jpeg':
+      case 'webp':
+        return true;
+      case 'svg':
+        return false;
+      default:
+        throw new Error('Invalid file extension');
+    }
+  }
+
+  private async convertImageToWebP(
+    file: Buffer,
+    width: number = 1024,
+  ): Promise<Buffer> {
+    try {
+      return await sharp(file, { failOn: 'error' })
+        .rotate()
+        .webp({ quality: 80, effort: 3 })
+        .resize({ width, withoutEnlargement: true })
+        .toBuffer();
+    } catch (error) {
+      console.error(error);
+      throw new Error('Error converting image to WebP');
+    }
   }
 }
