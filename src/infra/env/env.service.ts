@@ -28,6 +28,17 @@ export class EnvService {
     return this.configService.getOrThrow<number>('API_VERSION');
   }
 
+  get CORS_WHITE_LIST(): string[] {
+    const env = this.configService.get<string>('CORS_WHITE_LIST');
+
+    return (
+      env
+        ?.split(',')
+        .filter(Boolean)
+        .map((url) => url.trim().replace(/\/$/, '')) ?? []
+    );
+  }
+
   // #endregion
 
   // #region DOCUMENTATION
