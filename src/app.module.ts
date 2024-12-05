@@ -10,6 +10,7 @@ import { EnvModule } from '@/infra/env/env.module';
 import { I18nModule } from '@/infra/i18n/i18n-module';
 import { OrderModule } from '@/modules/order/order.module';
 import { DeviceModule } from '@/modules/device/device.module';
+import { ReportModule } from '@/modules/reports/report.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { DeviceModule } from '@/modules/device/device.module';
     AuthModule,
     DeviceModule,
     OrderModule,
+    ReportModule,
   ],
   providers: [
     { provide: APP_GUARD, useClass: JwtAuthGuard },
