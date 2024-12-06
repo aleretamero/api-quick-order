@@ -57,6 +57,7 @@ Table user_tokens {
 Table orders {
   id String [pk]
   status String [not null]
+  date DateTime [not null]
   image String
   imageUrl String
   description String [not null]

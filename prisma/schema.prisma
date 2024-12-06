@@ -78,6 +78,7 @@ model UserToken {
 model Order {
   id            String     @id @default(cuid())
   status        String
+  date          DateTime   @db.Date
   image         String?    @map("image")
   imageUrl      String?    @map("image_url")
   description   String
