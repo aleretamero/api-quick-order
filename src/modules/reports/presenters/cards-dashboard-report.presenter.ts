@@ -1,4 +1,4 @@
-import { DashboardCardsQueryRaw } from '@/modules/reports/query-raw/dashboard-cards.query-raw';
+import { DashboardCardsQueryRaw } from '@/modules/reports/types/dashboard-cards-query-raw.type';
 
 type CardDashboardPresenterProps = {
   receivedPrice: number;
@@ -28,23 +28,23 @@ export class CardsDashboardReportPresenter {
 
   constructor(props: CardsDashboardReportPresenterProps) {
     this.today = new CardDashboardPresenter({
-      receivedPrice: props.received_price_today ?? 0,
-      salePrice: props.sale_price_today ?? 0,
+      receivedPrice: props.received_price_today?.toNumber() ?? 0,
+      salePrice: props.sale_price_today?.toNumber() ?? 0,
       quantity: Number(props.quantity_today),
     });
     this.yesterday = new CardDashboardPresenter({
-      receivedPrice: props.received_price_yesterday ?? 0,
-      salePrice: props.sale_price_yesterday ?? 0,
+      receivedPrice: props.received_price_yesterday?.toNumber() ?? 0,
+      salePrice: props.sale_price_yesterday?.toNumber() ?? 0,
       quantity: Number(props.quantity_yesterday),
     });
     this.thisWeek = new CardDashboardPresenter({
-      receivedPrice: props.received_price_week ?? 0,
-      salePrice: props.sale_price_week ?? 0,
+      receivedPrice: props.received_price_week?.toNumber() ?? 0,
+      salePrice: props.sale_price_week?.toNumber() ?? 0,
       quantity: Number(props.quantity_week),
     });
     this.thisMonth = new CardDashboardPresenter({
-      receivedPrice: props.received_price_month ?? 0,
-      salePrice: props.sale_price_month ?? 0,
+      receivedPrice: props.received_price_month?.toNumber() ?? 0,
+      salePrice: props.sale_price_month?.toNumber() ?? 0,
       quantity: Number(props.quantity_month),
     });
   }
