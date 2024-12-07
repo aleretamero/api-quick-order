@@ -30,6 +30,7 @@ export class OrderService {
     const order = await this.prismaService.$transaction(async (ctx) => {
       const order = await ctx.order.create({
         data: {
+          date: dto.date,
           status: OrderStatus.PENDING,
           description: dto.description,
           salePrice: dto.salePrice,

@@ -1,3 +1,4 @@
+import { DateUtils } from '@/common/helpers/date-utils.helper';
 import { OrderStatus } from '@/modules/order/enums/order-status.enum';
 import {
   OrderLogsPresenter,
@@ -12,6 +13,7 @@ type OrderPresenterProps = Order & {
 
 export class OrderPresenter {
   id: string;
+  date: string;
   status: OrderStatus;
   description: string;
   imageUrl?: string;
@@ -21,6 +23,7 @@ export class OrderPresenter {
 
   constructor(props: OrderPresenterProps) {
     this.id = props.id;
+    this.date = DateUtils.format(props.date, 'YYYY-MM-DD', 'America/Sao_Paulo');
     this.status = props.status as OrderStatus;
     this.description = props.description;
     this.imageUrl = props.imageUrl ?? undefined;

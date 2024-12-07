@@ -1,8 +1,14 @@
+import { DateUtils } from '@/common/helpers/date-utils.helper';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
+import { IsDate, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateOrderDto {
+  @Transform(({ value }) => DateUtils.getDate(value, 'America/Sao_Paulo'))
+  @IsNotEmpty()
+  @IsDate()
+  date!: Date;
+
   @IsNotEmpty()
   @IsString()
   description!: string;
