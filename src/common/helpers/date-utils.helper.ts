@@ -40,11 +40,10 @@ export abstract class DateUtils {
   ): string {
     if (typeof date === 'string' && date.includes('/')) {
       const [day, month, year] = date.split('/');
-      const formattedDate = `${year}-${month}-${day}`;
-      return dayjs(formattedDate).tz(timezoneStr, true).format(format);
+      date = `${year}-${month}-${day}`;
     }
 
-    return dayjs(date).tz(timezoneStr, true).format(format);
+    return dayjs(date).tz(timezoneStr).utc(true).format(format);
   }
 
   /**
@@ -203,5 +202,27 @@ export abstract class DateUtils {
   static endOfMonth(date: Date | string, timezoneStr: string = 'UTC'): Date {
     const formattedDate = DateUtils.format(date);
     return dayjs(formattedDate).tz(timezoneStr, true).endOf('month').toDate();
+  }
+
+  /**
+   * Checks if a date is after another date.
+   *
+   * @static
+   * @param {Date|string|number} date1 - The first date to compare.
+   * @param {Date|string|number} date2 - The second date to compare.
+   * @param {string} [timezoneStr='UTC'] - The timezone to use (default is 'UTC').
+   * @returns {boolean} A boolean indicating if the first date is after the second date.
+   * @example
+   * const isAfter = DateUtils.isAfter(new Date(), '2023-12-31');
+   * console.log(isAfter); // e.g., true or false
+   */
+  static isAfter(
+    date1: Date | string | number,
+    date2: Date | string | number,
+    timezoneStr: string = 'UTC',
+  ): boolean {
+    return dayjs(date1)
+      .tz(timezoneStr, true)
+      .isAfter(dayjs(date2).tz(timezoneStr, true));
   }
 }
