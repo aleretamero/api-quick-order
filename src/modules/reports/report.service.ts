@@ -9,6 +9,8 @@ import { RangeDateQuery } from '@/common/queries/range-date.query';
 import { OrdersCompletedReportPresenter } from '@/modules/reports/presenters/orders-completed-report.presenter';
 import { OrdersCompletedQueryRaw } from '@/modules/reports/types/orders-completed-query-raw.type';
 import { Decimal } from '@prisma/client/runtime/library';
+import { OrdersStatusReportPresenter } from '@/modules/reports/presenters/orders-status-report.presenter';
+import { OrdersStatusQueryRaw } from '@/modules/reports/types/orders-status-query-raw.type';
 
 @Injectable()
 export class ReportService {
@@ -114,6 +116,31 @@ export class ReportService {
       startDate: query.from,
       endDate: query.to,
       data,
+    });
+  }
+
+  async getOrdersByStatus(
+    query: RangeDateQuery,
+  ): Promise<OrdersStatusReportPresenter> {
+    const { from, to } = this.getRangeDate(query);
+
+    const queryRaw = Prisma.sql`
+      SELECT
+        "status",
+        COUNT(*) AS "quantity"
+      FROM orders
+      WHERE "status" != ${OrderStatus.DELETED}
+      AND date >= ${from} AND date <= ${to}
+      GROUP BY "status"
+    `;
+
+    const result =
+      await this.prismaService.$queryRaw<OrdersStatusQueryRaw[]>(queryRaw);
+
+    return new OrdersStatusReportPresenter({
+      startDate: query.from,
+      endDate: query.to,
+      data: result,
     });
   }
 

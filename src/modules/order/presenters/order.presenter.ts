@@ -23,7 +23,11 @@ export class OrderPresenter {
 
   constructor(props: OrderPresenterProps) {
     this.id = props.id;
-    this.date = DateUtils.format(props.date, 'YYYY-MM-DD', 'America/Sao_Paulo');
+    this.date = DateUtils.format(
+      props.date.toISOString().split('T')[0],
+      'YYYY-MM-DD',
+      'America/Sao_Paulo',
+    );
     this.status = props.status as OrderStatus;
     this.description = props.description;
     this.imageUrl = props.imageUrl ?? undefined;

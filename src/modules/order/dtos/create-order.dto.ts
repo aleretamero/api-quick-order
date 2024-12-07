@@ -4,10 +4,10 @@ import { Transform } from 'class-transformer';
 import { IsDate, IsNotEmpty, IsNumber, IsString, Min } from 'class-validator';
 
 export class CreateOrderDto {
-  @Transform(({ value }) => DateUtils.getDate(value, 'America/Sao_Paulo'))
+  @Transform(({ value }) => DateUtils.getDate(value))
   @IsNotEmpty()
   @IsDate()
-  date!: Date;
+  date!: string;
 
   @IsNotEmpty()
   @IsString()
