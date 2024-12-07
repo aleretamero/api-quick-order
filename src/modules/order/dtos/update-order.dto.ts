@@ -1,9 +1,22 @@
+import { DateUtils } from '@/common/helpers/date-utils.helper';
 import { OrderStatus } from '@/modules/order/enums/order-status.enum';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
-import { IsEnum, IsNumber, IsOptional, IsString, Min } from 'class-validator';
+import {
+  IsDate,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+  Min,
+} from 'class-validator';
 
 export class UpdateOrderDto {
+  @Transform(({ value }) => DateUtils.getDate(value, 'America/Sao_Paulo'))
+  @IsOptional()
+  @IsDate()
+  date!: Date;
+
   @IsOptional()
   @IsString()
   description?: string;

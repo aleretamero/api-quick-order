@@ -157,6 +157,7 @@ export class OrderService {
           id: orderId,
         },
         data: {
+          date: dto.date,
           description: dto.description,
           salePrice: dto.salePrice,
           receivedPrice: dto.receivedPrice,
