@@ -75,6 +75,9 @@ export class OrderService {
         where,
         skip: (page - 1) * limit,
         take: limit,
+        orderBy: {
+          date: 'desc',
+        },
       }),
       this.prismaService.order.count({ where }),
     ]);
