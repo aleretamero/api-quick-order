@@ -22,7 +22,6 @@ import { Role } from '@/modules/user/enums/role.enum';
 import { ApiDocs } from '@/common/decorators/api-docs.decorators';
 import { CurrentUser } from '@/common/decorators/current-user.decorator';
 import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
-import { PaginationQuery } from '@/common/queries/pagination.query';
 import { CurrentSession } from '@/common/decorators/current-session.decorator';
 import {
   UpdateOrderDto,
@@ -31,6 +30,7 @@ import {
 import { UseInterceptorFile } from '@/common/decorators/use-file-interceptor';
 import { ParseFilePipe } from '@/common/pipes/parse-file.pipe';
 import { FileType } from '@/common/types/file.type';
+import { GetOrdersQueryPagination } from '@/modules/order/queries/get-orders.query';
 
 @Controller('orders')
 export class OrderController {
@@ -52,7 +52,7 @@ export class OrderController {
   @ApiDocs({ response: [401, 500] })
   index(
     @CurrentUser('role') role: Role,
-    @Query() query: PaginationQuery,
+    @Query() query: GetOrdersQueryPagination,
   ): Promise<PaginationPresenter<OrderPresenter>> {
     return this.orderService.findAll(role, query);
   }

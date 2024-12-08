@@ -7,10 +7,11 @@ import { UpdateOrderDto } from '@/modules/order/dtos/update-order.dto';
 import { OrderPresenter } from '@/modules/order/presenters/order.presenter';
 import { Role } from '@/modules/user/enums/role.enum';
 import { PaginationPresenter } from '@/common/presenters/pagination.presenter';
-import { PaginationQuery } from '@/common/queries/pagination.query';
 import { Prisma } from '@prisma/client';
 import { FileType } from '@/common/types/file.type';
 import { StorageFirebaseService } from '@/infra/storage-firebase/storage-firebase.service';
+import { GetOrdersQueryPagination } from '@/modules/order/queries/get-orders.query';
+import { DateUtils } from '@/common/helpers/date-utils.helper';
 
 @Injectable()
 export class OrderService {
@@ -59,7 +60,7 @@ export class OrderService {
 
   async findAll(
     role: Role,
-    query: PaginationQuery,
+    query: GetOrdersQueryPagination,
   ): Promise<PaginationPresenter<OrderPresenter>> {
     const limit = query.limit ?? 10;
     const page = query.page ?? 1;
@@ -67,6 +68,12 @@ export class OrderService {
     const where: Prisma.OrderWhereInput = {
       status: {
         not: OrderStatus.DELETED,
+        in: query.status,
+      },
+
+      createdAt: {
+        gte: DateUtils.startOfDay(query.from),
+        lte: DateUtils.endOfDay(query.to),
       },
     };
 
