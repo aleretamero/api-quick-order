@@ -8,6 +8,7 @@ import {
   Param,
   Patch,
   Post,
+  Put,
   Query,
   UploadedFile,
 } from '@nestjs/common';
@@ -68,7 +69,7 @@ export class OrderController {
 
   @Patch(':id')
   @UseInterceptorFile('image')
-  @ApiDocs({ response: [400, 401, 500], body: { type: UpdateOrderSchema } })
+  @ApiDocs({ response: [400, 401, 404, 500], body: { type: UpdateOrderSchema } }) // prettier-ignore
   update(
     @Param('id') orderId: string,
     @CurrentSession('id') sessionId: string,
@@ -76,6 +77,36 @@ export class OrderController {
     @UploadedFile(ParseFilePipe) file?: FileType,
   ): Promise<OrderPresenter> {
     return this.orderService.update(sessionId, orderId, body, file);
+  }
+
+  @Put(':id/process')
+  @ApiDocs({ response: [401, 404, 500] })
+  process(
+    @CurrentUser('role') role: Role,
+    @Param('id') orderId: string,
+    @CurrentSession('id') sessionId: string,
+  ): Promise<OrderPresenter> {
+    return this.orderService.process(sessionId, role, orderId);
+  }
+
+  @Put(':id/finish')
+  @ApiDocs({ response: [401, 404, 500] })
+  finish(
+    @CurrentUser('role') role: Role,
+    @Param('id') orderId: string,
+    @CurrentSession('id') sessionId: string,
+  ): Promise<OrderPresenter> {
+    return this.orderService.finish(sessionId, role, orderId);
+  }
+
+  @Put(':id/cancel')
+  @ApiDocs({ response: [401, 404, 500] })
+  cancel(
+    @CurrentUser('role') role: Role,
+    @Param('id') orderId: string,
+    @CurrentSession('id') sessionId: string,
+  ): Promise<OrderPresenter> {
+    return this.orderService.cancel(sessionId, role, orderId);
   }
 
   @Delete(':id')

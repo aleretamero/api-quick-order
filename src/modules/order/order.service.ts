@@ -12,6 +12,7 @@ import { FileType } from '@/common/types/file.type';
 import { StorageFirebaseService } from '@/infra/storage-firebase/storage-firebase.service';
 import { GetOrdersQueryPagination } from '@/modules/order/queries/get-orders.query';
 import { DateUtils } from '@/common/helpers/date-utils.helper';
+import { OrderLogsAction } from '@/modules/order/enums/order-logs-action.enum';
 
 @Injectable()
 export class OrderService {
@@ -43,6 +44,7 @@ export class OrderService {
 
       await ctx.orderLog.create({
         data: {
+          action: OrderLogsAction.CREATE,
           sessionId: sessionId,
           orderId: order.id,
           afterState: order,
@@ -171,7 +173,6 @@ export class OrderService {
           description: dto.description,
           salePrice: dto.salePrice,
           receivedPrice: dto.receivedPrice,
-          status: dto.status,
           image,
           imageUrl,
         },
@@ -179,6 +180,7 @@ export class OrderService {
 
       await ctx.orderLog.create({
         data: {
+          action: OrderLogsAction.UPDATE,
           sessionId: sessionId,
           orderId: orderId,
           beforeState: currentOrder,
@@ -192,6 +194,165 @@ export class OrderService {
     return new OrderPresenter({
       ...order,
       isAdmin: true,
+    });
+  }
+
+  async finish(
+    sessionId: string,
+    role: Role,
+    orderId: string,
+  ): Promise<OrderPresenter> {
+    const currentOrder = await this.prismaService.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!currentOrder) {
+      throw new NotFoundException(
+        this.i18nService.t('order.not_found_with_id', { orderId }),
+      );
+    }
+
+    if (currentOrder.status === OrderStatus.COMPLETED) {
+      return new OrderPresenter({
+        ...currentOrder,
+        isAdmin: role === Role.ADMIN,
+      });
+    }
+
+    const order = await this.prismaService.$transaction(async (ctx) => {
+      const updatedOrder = await ctx.order.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          status: OrderStatus.COMPLETED,
+        },
+      });
+
+      await ctx.orderLog.create({
+        data: {
+          action: OrderLogsAction.FINISH,
+          sessionId: sessionId,
+          orderId: orderId,
+          beforeState: currentOrder,
+          afterState: updatedOrder,
+        },
+      });
+
+      return updatedOrder;
+    });
+
+    return new OrderPresenter({
+      ...order,
+      isAdmin: role === Role.ADMIN,
+    });
+  }
+
+  async cancel(
+    sessionId: string,
+    role: Role,
+    orderId: string,
+  ): Promise<OrderPresenter> {
+    const currentOrder = await this.prismaService.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!currentOrder) {
+      throw new NotFoundException(
+        this.i18nService.t('order.not_found_with_id', { orderId }),
+      );
+    }
+
+    if (currentOrder.status === OrderStatus.CANCELED) {
+      return new OrderPresenter({
+        ...currentOrder,
+        isAdmin: role === Role.ADMIN,
+      });
+    }
+
+    const order = await this.prismaService.$transaction(async (ctx) => {
+      const updatedOrder = await ctx.order.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          status: OrderStatus.CANCELED,
+        },
+      });
+
+      await ctx.orderLog.create({
+        data: {
+          action: OrderLogsAction.CANCEL,
+          sessionId: sessionId,
+          orderId: orderId,
+          beforeState: currentOrder,
+          afterState: updatedOrder,
+        },
+      });
+
+      return updatedOrder;
+    });
+
+    return new OrderPresenter({
+      ...order,
+      isAdmin: role === Role.ADMIN,
+    });
+  }
+
+  async process(
+    sessionId: string,
+    role: Role,
+    orderId: string,
+  ): Promise<OrderPresenter> {
+    const currentOrder = await this.prismaService.order.findUnique({
+      where: {
+        id: orderId,
+      },
+    });
+
+    if (!currentOrder) {
+      throw new NotFoundException(
+        this.i18nService.t('order.not_found_with_id', { orderId }),
+      );
+    }
+
+    if (currentOrder.status === OrderStatus.PROCESSING) {
+      return new OrderPresenter({
+        ...currentOrder,
+        isAdmin: role === Role.ADMIN,
+      });
+    }
+
+    const order = await this.prismaService.$transaction(async (ctx) => {
+      const updatedOrder = await ctx.order.update({
+        where: {
+          id: orderId,
+        },
+        data: {
+          status: OrderStatus.PROCESSING,
+        },
+      });
+
+      await ctx.orderLog.create({
+        data: {
+          action: OrderLogsAction.PROCESS,
+          sessionId: sessionId,
+          orderId: orderId,
+          beforeState: currentOrder,
+          afterState: updatedOrder,
+        },
+      });
+
+      return updatedOrder;
+    });
+
+    return new OrderPresenter({
+      ...order,
+      isAdmin: role === Role.ADMIN,
     });
   }
 
@@ -224,6 +385,7 @@ export class OrderService {
 
       await ctx.orderLog.create({
         data: {
+          action: OrderLogsAction.DELETE,
           sessionId: sessionId,
           orderId: orderId,
           beforeState: currentOrder,
