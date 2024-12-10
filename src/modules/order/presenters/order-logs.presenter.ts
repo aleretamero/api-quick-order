@@ -1,3 +1,4 @@
+import { OrderLogsAction } from '@/modules/order/enums/order-logs-action.enum';
 import {
   OrderDetailsPresenter,
   OrderDetailsPresenterProps,
@@ -21,6 +22,8 @@ export class OrderLogsPresenter {
   orderId: string;
   userId: string;
   userEmail: string;
+  @ApiProperty({ enum: OrderLogsAction })
+  action: OrderLogsAction;
   @ApiProperty({ type: () => OrderDetailsPresenter })
   beforeState: OrderDetailsPresenter | null;
   @ApiProperty({ type: () => OrderDetailsPresenter })
@@ -30,6 +33,7 @@ export class OrderLogsPresenter {
   constructor(props: OrderLogsPresenterProps) {
     this.id = props.id;
     this.orderId = props.orderId;
+    this.action = props.action as OrderLogsAction;
     this.beforeState = props.beforeState
       ? new OrderDetailsPresenter(
           props.beforeState as unknown as OrderDetailsPresenterProps, // TODO: fix this type
