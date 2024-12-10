@@ -61,8 +61,8 @@ model Session {
 }
 
 model UserToken {
-  id            String   @id @default(uuid()) @db.VarChar(50)
-  userId        String   @map("user_id") @db.VarChar(50)
+  id            String   @id @default(uuid())
+  userId        String   @map("user_id")
   type          String
   status        String
   encryptedCode String   @map("encrypted_code") @db.Text
@@ -93,9 +93,10 @@ model Order {
 
 model OrderLog {
   id          String   @id @default(cuid())
-  orderId     String   @map("order_id") @db.VarChar(50)
-  sessionId   String   @map("session_id") @db.VarChar(50)
+  orderId     String   @map("order_id")
+  sessionId   String   @map("session_id")
   session     Session  @relation(fields: [sessionId], references: [id])
+  action      String
   beforeState Json?    @map("before_state")
   afterState  Json?    @map("after_state")
   createdAt   DateTime @default(now()) @map("created_at")
