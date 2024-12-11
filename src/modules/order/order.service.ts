@@ -72,8 +72,7 @@ export class OrderService {
         not: OrderStatus.DELETED,
         in: query.status,
       },
-
-      createdAt: {
+      date: {
         gte: DateUtils.startOfDay(query.from),
         lte: DateUtils.endOfDay(query.to),
       },
