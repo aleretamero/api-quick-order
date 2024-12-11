@@ -69,7 +69,8 @@ export class OrderController {
 
   @Patch(':id')
   @UseInterceptorFile('image')
-  @ApiDocs({ response: [400, 401, 404, 500], body: { type: UpdateOrderSchema } }) // prettier-ignore
+  @Roles(Role.ADMIN)
+  @ApiDocs({ response: [400, 401,403, 404, 500], body: { type: UpdateOrderSchema } }) // prettier-ignore
   update(
     @Param('id') orderId: string,
     @CurrentSession('id') sessionId: string,
