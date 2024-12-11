@@ -67,6 +67,17 @@ export class OrderService {
     const limit = query.limit ?? 10;
     const page = query.page ?? 1;
 
+    if (!query.from || !query.to) {
+      return new PaginationPresenter({
+        data: [],
+        meta: {
+          total: 0,
+          currentPage: page,
+          itemsPerPage: limit,
+        },
+      });
+    }
+
     const where: Prisma.OrderWhereInput = {
       status: {
         not: OrderStatus.DELETED,
