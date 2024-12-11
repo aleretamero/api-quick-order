@@ -8,6 +8,11 @@ export async function usersSeed(prisma: PrismaClient) {
       hashedPassword: await bcrypt.hash(process.env.ADMIN_PASSWORD!, 10),
       role: 'ADMIN',
     },
+    {
+      email: 'user@email.com',
+      hashedPassword: await bcrypt.hash(process.env.ADMIN_PASSWORD!, 10),
+      role: 'EMPLOYEE',
+    },
   ];
 
   await prisma.$transaction(async (ctx) => {
